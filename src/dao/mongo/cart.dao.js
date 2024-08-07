@@ -22,6 +22,40 @@ class CartDAO {
 
     await cart.save();
     return cart;
+
+  }
+
+    async updateProductQuantity(cartId, productId, quantity) {
+      const cart = await CartModel.findById(cartId);
+      if (!cart) return null;
+  
+      const productIndex = cart.products.findIndex(p => p.product.toString() === productId);
+      if (productIndex > -1) {
+        cart.products[productIndex].quantity = quantity;
+      } else {
+        cart.products.push({ product: productId, quantity });
+      }
+  
+      await cart.save();
+      return cart;
+    }
+  
+    async deleteProductFromCart(cartId, productId) {
+      const cart = await CartModel.findById(cartId);
+      if (!cart) return null;
+  
+      cart.products = cart.products.filter(p => p.product.toString() !== productId);
+      await cart.save();
+      return cart;
+    }
+  
+    async deleteAllProductsFromCart(cartId) {
+      const cart = await CartModel.findById(cartId);
+      if (!cart) return null;
+  
+      cart.products = [];
+      await cart.save();
+      return cart;
   }
 }
 

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product Detail</title>
+</head>
+<body>
+    <h1>{{product.title}}</h1>
+    <p>{{product.description}}</p>
+    <p>Price: {{product.price}}</p>
+    <p>Category: {{product.category}}</p>
+    <p>Status: {{product.status}}</p>
+    <button onclick="addToCart('{{product.id}}')">Add to Cart</button>
+    <script>
+        function addToCart(productId) {
+            fetch(`/api/carts/add/${productId}`, {
+                method: 'POST'
+            }).then(response => {
+                if (response.ok) {
+                    alert('Product added to cart');
+                } else {
+                    alert('Failed to add product to cart');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
