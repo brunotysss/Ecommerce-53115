@@ -1,40 +1,31 @@
-const Cart = require('../dao/models/cartModel');
+const ProductService = require('../services/product.service');
 
-exports.createCart = async (req, res) => {
-  try {
-    const newCart = new Cart();
-    await newCart.save();
-    res.status(201).json(newCart);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+exports.getAllProducts = async (req, res) => {
+  const products = await ProductService.getAllProducts();
+  if (!products) return res.status(500).json({ error: 'Failed to fetch products' });
+  res.json(products);
 };
 
-exports.getCartById = async (req, res) => {
-  try {
-    const cart = await Cart.findById(req.params.cid).populate('products.product');
-    if (!cart) return res.status(404).json({ error: 'Cart not found' });
-    res.json(cart);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+exports.getProductById = async (req, res) => {
+  const product = await ProductService.getProductById(req.params.pid);
+  if (!product) return res.status(404).json({ error: 'Product not found' });
+  res.json(product);
 };
 
-exports.addProductToCart = async (req, res) => {
-  try {
-    const cart = await Cart.findById(req.params.cid);
-    if (!cart) return res.status(404).json({ error: 'Cart not found' });
+exports.createProduct = async (req, res) => {
+  const newProduct = await ProductService.createProduct(req.body);
+  if (!newProduct) return res.status(500).json({ error: 'Failed to create product' });
+  res.status(201).json(newProduct);
+};
 
-    const productIndex = cart.products.findIndex(p => p.product.toString() === req.params.pid);
-    if (productIndex > -1) {
-      cart.products[productIndex].quantity += 1;
-    } else {
-      cart.products.push({ product: req.params.pid, quantity: 1 });
-    }
+exports.updateProduct = async (req, res) => {
+  const updatedProduct = await ProductService.updateProduct(req.params.pid, req.body);
+  if (!updatedProduct) return res.status(404).json({ error: 'Product not found' });
+  res.json(updatedProduct);
+};
 
-    await cart.save();
-    res.json(cart);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+exports.deleteProduct = async (req, res) => {
+  const deletedProduct = await ProductService.deleteProduct(req.params.pid);
+  if (!deletedProduct) return res.status(404).json({ error: 'Product not found' });
+  res.json({ message: 'Product deleted' });
 };
