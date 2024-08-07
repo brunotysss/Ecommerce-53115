@@ -1,4 +1,4 @@
-const CartService = require('../services/cart.services');
+const CartService = require('../services/cart.service');
 
 exports.createCart = async (req, res) => {
   const newCart = await CartService.createCart();
