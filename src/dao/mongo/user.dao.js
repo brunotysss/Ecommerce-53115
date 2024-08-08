@@ -25,6 +25,9 @@ class UserDAO {
     return await User.findOne({ refreshTokens: token });
   }
 
+  async updateUserRefreshTokens(userId, refreshTokens) {
+    return await User.findByIdAndUpdate(userId, { refreshTokens }, { new: true });
+  }
   async addDocuments(userId, documents) {
     return await User.findByIdAndUpdate(userId, { $push: { documents: { $each: documents } } }, { new: true });
   }

@@ -9,14 +9,14 @@ const userSchema = new Schema({
   password: { type: String, required: true },
   cart: { type: Schema.Types.ObjectId, ref: 'Cart' },
   role: { type: String, default: 'user' },
-  refreshTokens: [{ type: String }],
+  refreshTokens: { type: [String], default: [] },
   documents: [
     {
       name: { type: String },
       reference: { type: String },
     },
   ],
-  last_connection: { type: Date }
+  last_connection: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model('User', userSchema);

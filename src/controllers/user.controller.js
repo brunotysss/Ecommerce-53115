@@ -1,7 +1,7 @@
 const UserService = require('../services/user.service');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const { jwtSecret, refreshTokenSecret } = require('../config/passport');
+const { jwtSecret, refreshTokenSecret } = require('../config/index');
 
 
 exports.register = async (req, res) => {
@@ -16,6 +16,10 @@ exports.register = async (req, res) => {
       age,
       password: hashedPassword
     });
+    if (req.headers['x-postman']) {
+      // Si la solicitud proviene de Postman, no redirigir
+      return res.status(201).json(user);
+    }
 
     res.redirect('/login');
   } catch (error) {
@@ -25,12 +29,16 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
+    console.log("Request Body:", req.body);
+
     const { email, password } = req.body;
     const user = await UserService.getUserByEmail(email);
     if (!user) return res.status(401).json({ error: 'Invalid credentials' });
+    console.log("User found:", user);
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(401).json({ error: 'Invalid credentials' });
+    console.log("Password match:", isMatch);
 
     const token = jwt.sign({ id: user._id, role: user.role }, jwtSecret, { expiresIn: '15m' });
     const refreshToken = jwt.sign({ id: user._id, role: user.role }, refreshTokenSecret, { expiresIn: '7d' });
@@ -40,8 +48,10 @@ exports.login = async (req, res) => {
 
     res.cookie('jwt', token, { httpOnly: true, secure: true });
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
-    res.redirect('/products');
+   // res.json({ message: 'Logged in successfully', token });
+   res.redirect('/products'); /// IMPORTANTE AGREGAR LUEGO LA REDIRECCION PARA MOSTRAR LOS PRODUCTOS DE LA DB MEDIANTE UN VIEW DE HANDLEBARS
   } catch (error) {
+    console.error("Login error:", error);
     res.status(500).json({ error: 'Failed to login', details: error.message });
   }
 };
@@ -77,14 +87,24 @@ exports.logout = async (req, res) => {
     const user = await UserService.getUserByRefreshToken(refreshToken);
 
     if (user) {
-      user.refreshTokens = user.refreshTokens.filter(token => token !== refreshToken);
-      await user.save();
+      console.log('User encontrado:', user); // Log para depuración
+      console.log('User refreshTokens antes:', user.refreshTokens); // Log para depuración
+      const updatedUser = await UserService.updateUserRefreshTokens(user.id, user.refreshTokens.filter(token => token !== refreshToken));
+
+   //   user.refreshTokens = user.refreshTokens.filter(token => token !== refreshToken);
+     // await user.findByIdAndUpdate(user._id, { refreshTokens: user.refreshTokens });
+
+   //   await user.save();
+   console.log('User refreshTokens después:', updatedUser.refreshTokens); // Log para depuración
+
     }
 
     res.clearCookie('jwt');
     res.clearCookie('refreshToken');
     res.json({ message: 'Logout successful' });
   } catch (error) {
+    console.error('Error en logout:', error); // Log para depuración
+
     res.status(500).json({ error: 'Failed to logout', details: error.message });
   }
 };

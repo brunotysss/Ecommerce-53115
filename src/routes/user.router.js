@@ -2,28 +2,36 @@ const { Router } = require('express');
 const multer = require('multer');
 const UserController = require('../controllers/user.controller');
 const { authenticate, authorize } = require('../middleware/auth');
+const User = require('../dao/mongo/models/user.model'); // Importar el modelo User
+const bcrypt = require('bcrypt'); // Importar bcrypt
+const faker = require('faker');
+const path = require('path');  // Importar el módulo path
+const passport = require('passport');
 
+faker.locale = 'es'; 
 const router = Router();
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
+    const baseDir = path.join(__dirname, '..', 'uploads'); // Asegurarse de que apunta al nivel correcto
     if (file.fieldname === 'profile') {
-        cb(null, path.join(__dirname, 'uploads/profiles'));
-      } else if (file.fieldname === 'product') {
-        cb(null, path.join(__dirname, 'uploads/products'));
-      } else {
-        cb(null, path.join(__dirname, 'uploads/documents'));
-      }
-    },
+      cb(null, path.join(baseDir, 'profiles'));
+    } else if (file.fieldname === 'product') {
+      cb(null, path.join(baseDir, 'products'));
+    } else {
+      cb(null, path.join(baseDir, 'documents'));
+    }
+  },
   filename: function (req, file, cb) {
     cb(null, `${Date.now()}-${file.originalname}`);
   }
 });
-
 const upload = multer({ storage });
 
 router.post('/register', upload.none(), UserController.register);
-router.post('/login', upload.none(), UserController.login);
+//router.post('/login', upload.none(), UserController.login);
+router.post('/login', passport.authenticate('login', { failureRedirect: '/login' }), UserController.login);
+
 router.post('/logout', authenticate, UserController.logout);
 router.post('/refresh-token', UserController.refreshToken);
 

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { jwtSecret, refreshTokenSecret } = require('../config');
+const { jwtSecret, refreshTokenSecret } = require('../config/index');
 const UserService = require('../services/user.service');
 
 exports.authenticate = async (req, res, next) => {
@@ -10,7 +10,9 @@ exports.authenticate = async (req, res, next) => {
   }
 
   try {
+    console.log('Token recibido:', token); // Log para depuración
     const decoded = jwt.verify(token, jwtSecret);
+    console.log('Token decodificado:', decoded); // Log para depuración
     const user = await UserService.getUserById(decoded.id); // Usamos el UserService para obtener el usuario
     if (!user) {
       return res.status(401).json({ error: 'Access denied' });
@@ -18,6 +20,8 @@ exports.authenticate = async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
+    console.error('Error de verificación del token:', error); // Log para depuración
+
     res.status(400).json({ error: 'Invalid token' });
   }
 };

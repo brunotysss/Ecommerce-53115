@@ -14,6 +14,8 @@ const viewsRoutes = require('./routes/view.router');
 const ticketRoutes = require('./routes/ticket.router');
 const userRoutes = require('./routes/user.router');
 const exphbs = require('express-handlebars');
+const path = require('path'); // Asegúrate de requerir path
+const sessionRoutes = require('./routes/session.router');
 
 const app = express();
 app.use(express.json());
@@ -49,7 +51,7 @@ app.use('/api/carts', cartRoutes);
 app.use('/api/users', userRoutes);
 app.use('/', viewsRoutes);
 app.use('/api/tickets', ticketRoutes);
-
+app.use('/api/sessions', sessionRoutes);
 const main = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI, { dbName: process.env.DB_NAME });

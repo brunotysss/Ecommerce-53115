@@ -8,8 +8,7 @@ class UserService {
   }
 
   async getUserByEmail(email) {
-    const user = await UserDAO.getUserByEmail(email);
-    return new UserDTO(user);
+    return await UserDAO.getUserByEmail(email); // Devuelve el objeto User completo
   }
 
   async getUserById(id) {
@@ -19,7 +18,13 @@ class UserService {
 
   async getUserByRefreshToken(token) {
     const user = await UserDAO.getUserByRefreshToken(token);
-    return new UserDTO(user);
+    return user;
+   // return new UserDTO(user);
+    // return await ProductDAO.getProducts();
+  }
+  async updateUserRefreshTokens(userId, refreshTokens) {
+    const updatedUser = await UserDAO.updateUserRefreshTokens(userId, refreshTokens);
+    return updatedUser ? new UserDTO(updatedUser) : null;
   }
 
   async addDocuments(userId, documents) {
@@ -29,7 +34,7 @@ class UserService {
 
   async upgradeToPremium(userId) {
     const user = await UserDAO.upgradeToPremium(userId);
-    return new UserDTO(user);
+    return user;
   }
 }
 
