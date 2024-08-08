@@ -1,7 +1,7 @@
 const UserService = require('../services/user.service');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const { jwtSecret, refreshTokenSecret } = require('../config');
+const { jwtSecret, refreshTokenSecret } = require('../config/passport');
 
 
 exports.register = async (req, res) => {

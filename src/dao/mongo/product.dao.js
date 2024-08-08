@@ -1,8 +1,18 @@
 const ProductModel = require('./models/product.model');
 
 class ProductDAO {
-  async getProducts() {
-    return await ProductModel.find();
+  async getProducts(filters, options) {
+    const query = ProductModel.find(filters);
+
+    if (options.sort) {
+      query.sort(options.sort);
+    }
+
+    const products = await ProductModel.paginate(query, options);
+    return {
+      products: products.docs,
+      total: products.totalDocs
+    };
   }
 
   async getProductById(id) {

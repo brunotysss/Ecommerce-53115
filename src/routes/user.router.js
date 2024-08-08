@@ -37,7 +37,7 @@ router.post('/premium/:uid', authenticate, UserController.upgradeToPremium);
 
 // Ruta para generar usuarios de prueba
 router.post('/generate-fake-users', async (req, res) => {
-  try {
+  try {                                                         
     const users = [];
     for (let i = 0; i < 10; i++) {
       const user = {
@@ -66,7 +66,7 @@ router.get('/', authenticate, authorize(['admin']), async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch users', details: error.message });
   }
 });
-
+  
 // Ruta para eliminar usuarios inactivos
 router.delete('/', authenticate, authorize(['admin']), async (req, res) => {
   try {
