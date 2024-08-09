@@ -17,6 +17,8 @@ const exphbs = require('express-handlebars');
 const path = require('path'); // Asegúrate de requerir path
 const sessionRoutes = require('./routes/session.router');
 const logger = require('./config/logger');
+const swaggerRoutes = require('./routes/swagger'); // Importar rutas de Swagger
+const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 app.use(express.json());
@@ -70,17 +72,27 @@ app.get('/loggerTest', (req, res) => {
 
   res.send('Logger test complete');
 });
+const errorHandler = require('./middleware/errorHandler'); // Importar manejador de errores
+app.use(errorHandler); // Usar manejador de errores
+
+app.use('/', swaggerRoutes);
+
 const main = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI, { dbName: process.env.DB_NAME });
     console.log('MongoDB connected...');
+    logger.info('MongoDB connected...');
 
     const PORT = process.env.PORT || 8080;
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
+      logger.info(`Server running on port ${PORT}`);
+
     });
   } catch (err) {
     console.error(err.message);
+    logger.error('Failed to connect to MongoDB', err);
+
     process.exit(1);
   }
 };
