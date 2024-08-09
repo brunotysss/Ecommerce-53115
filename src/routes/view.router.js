@@ -38,7 +38,14 @@ router.get('/login', (req, res) => {
     res.render('register');
   });
 
-
+  router.get('/forgot-password', (req, res) => {
+    res.render('forgot-password');
+  });
+  
+  router.get('/reset-password', (req, res) => {
+    const { token } = req.query;
+    res.render('reset-password', { token });
+  });
 
 module.exports = router;
 

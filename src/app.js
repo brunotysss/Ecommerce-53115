@@ -16,11 +16,18 @@ const userRoutes = require('./routes/user.router');
 const exphbs = require('express-handlebars');
 const path = require('path'); // Asegúrate de requerir path
 const sessionRoutes = require('./routes/session.router');
+const logger = require('./config/logger');
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
+
+
+app.use((req, res, next) => {
+  req.logger = logger;
+  next();
+});
 
 // Configurar Handlebars
 app.engine('handlebars', exphbs.engine());
@@ -52,6 +59,17 @@ app.use('/api/users', userRoutes);
 app.use('/', viewsRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/sessions', sessionRoutes);
+
+app.get('/loggerTest', (req, res) => {
+  req.logger.debug('This is a debug log');
+  req.logger.http('This is an http log');
+  req.logger.info('This is an info log');
+  req.logger.warn('This is a warning log');
+  req.logger.error('This is an error log');
+  req.logger.fatal('This is a fatal log');
+
+  res.send('Logger test complete');
+});
 const main = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI, { dbName: process.env.DB_NAME });

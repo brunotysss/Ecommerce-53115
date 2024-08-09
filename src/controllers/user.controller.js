@@ -2,6 +2,8 @@ const UserService = require('../services/user.service');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { jwtSecret, refreshTokenSecret } = require('../config/index');
+const EmailService = require('../services/email.service');
+
 
 
 exports.register = async (req, res) => {
@@ -150,4 +152,55 @@ exports.upgradeToPremium = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Failed to upgrade user', details: error.message });
   }
+};
+
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await UserService.getUserByEmail(email);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetLink = `http://localhost:8081/reset-password?token=${resetToken}`;
+    
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+    await user.save();
+
+    await sendResetPasswordEmail(user.email, resetLink);
+
+    res.json({ message: 'Password reset link sent' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to request password reset', details: error.message });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+    const user = await UserService.getUserByResetToken(token);
+
+    if (!user || user.resetPasswordExpires < Date.now()) {
+      return res.status(400).json({ error: 'Token is invalid or has expired' });
+    }
+
+    const isSamePassword = await bcrypt.compare(newPassword, user.password);
+    if (isSamePassword) {
+      return res.status(400).json({ error: 'New password cannot be the same as the old password' });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    res.json({ message: 'Password has been reset' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to reset password', details: error.message });
+  }
+};
+
+exports.getCurrentUser = (req, res) => {
+  res.json(req.user);
 };

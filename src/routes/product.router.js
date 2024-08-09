@@ -1,17 +1,25 @@
 const { Router } = require('express');
 const { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct } = require('../controllers/productController');
 const ProductModel = require('../dao/mongo/models/product.model');
+const { authenticate, authorize } = require('../middleware/auth');
 const faker = require('faker');
 faker.locale = 'es';  // Configurar Faker.js para español
 const router = Router();
 
 router.get('/', getAllProducts);
 router.get('/:pid', getProductById);
-router.post('/', createProduct);
+/*router.post('/', createProduct);
 router.put('/:pid', updateProduct);
 router.delete('/:pid', deleteProduct);
-
-
+*/
+router.post('/', authenticate, authorize(['admin', 'premium']), createProduct);
+router.put('/:pid', authenticate, authorize(['admin', 'premium']), updateProduct);
+router.delete('/:pid', authenticate, authorize(['admin', 'premium']), deleteProduct);
+/*
+router.post('/', authenticate, authorize(['admin', 'premium']), ProductController.createProduct);
+router.put('/:id', authenticate, authorize(['admin', 'premium']), ProductController.updateProduct);
+router.delete('/:id', authenticate, authorize(['admin', 'premium']), ProductController.deleteProduct);
+*/
 // Endpoint para inicializar datos
 router.post('/init', async (req, res) => {
     try {

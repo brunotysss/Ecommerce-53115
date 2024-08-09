@@ -43,6 +43,11 @@ router.post('/:uid/documents', authenticate, upload.fields([
 
 router.post('/premium/:uid', authenticate, UserController.upgradeToPremium);
 
+router.post('/forgot-password', UserController.forgotPassword);
+router.post('/reset-password', UserController.resetPassword);
+router.get('/current', authenticate, UserController.getCurrentUser);
+
+
 // Ruta para generar usuarios de prueba
 router.post('/generate-fake-users', async (req, res) => {
   try {                                                         

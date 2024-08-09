@@ -31,11 +31,22 @@ class UserService {
     const user = await UserDAO.addDocuments(userId, documents);
     return new UserDTO(user);
   }
-
   async upgradeToPremium(userId) {
-    const user = await UserDAO.upgradeToPremium(userId);
-    return user;
+    const user = await UserDAO.getUserById(userId);
+    if (!user) throw new Error('User not found');
+
+    const requiredDocuments = ['Identificación', 'Comprobante de domicilio', 'Comprobante de estado de cuenta'];
+    const hasAllDocuments = requiredDocuments.every(doc => 
+      user.documents.some(userDoc => userDoc.name === doc)
+    );
+
+    if (!hasAllDocuments) throw new Error('User has not completed all required documents');
+
+    user.role = 'premium';
+    return await UserDAO.updateUser(user._id, { role: 'premium' });
   }
 }
+
+
 
 module.exports = new UserService();

@@ -38,8 +38,7 @@ class ProductService {
   }
 
   async createProduct(product) {
-    const newProduct = await ProductDAO.createProduct(product);
-    return new ProductDTO(newProduct);
+    return await ProductDAO.create(product);
   }
 
   async updateProduct(id, product) {
