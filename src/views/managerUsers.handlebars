@@ -1,0 +1,28 @@
+<h1>Gestionar Usuarios</h1>
+<table>
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Email</th>
+      <th>Rol</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each users}}
+    <tr>
+      <td>{{this.first_name}} {{this.last_name}}</td>
+      <td>{{this.email}}</td>
+      <td>{{this.role}}</td>
+      <td>
+        <form action="/api/users/premium/{{this._id}}" method="POST">
+          <button type="submit">Cambiar Rol</button>
+        </form>
+        <form action="/api/users/delete/{{this._id}}" method="POST">
+          <button type="submit">Eliminar Usuario</button>
+        </form>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

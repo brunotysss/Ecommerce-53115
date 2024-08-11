@@ -17,8 +17,8 @@ const exphbs = require('express-handlebars');
 const path = require('path'); // Asegúrate de requerir path
 const sessionRoutes = require('./routes/session.router');
 const logger = require('./config/logger');
-const swaggerRoutes = require('./routes/swagger'); // Importar rutas de Swagger
-const errorHandler = require('./middleware/errorHandler');
+//const swaggerRoutes = require('./routes/swagger'); // Importar rutas de Swagger
+const errorHandler = require('./middleware/errorHandlebars');
 
 const app = express();
 app.use(express.json());
@@ -72,10 +72,9 @@ app.get('/loggerTest', (req, res) => {
 
   res.send('Logger test complete');
 });
-const errorHandler = require('./middleware/errorHandler'); // Importar manejador de errores
 app.use(errorHandler); // Usar manejador de errores
 
-app.use('/', swaggerRoutes);
+//app.use('/', swaggerRoutes);
 
 const main = async () => {
   try {
