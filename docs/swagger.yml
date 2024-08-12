@@ -1,0 +1,368 @@
+openapi: 3.0.1
+info:
+  title: E-commerce API
+  description: API documentation for the E-commerce application
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /api/products:
+    get:
+      summary: Get all products
+      tags: 
+        - Products
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: Limit the number of products returned
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: The page number for pagination
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '500':
+          description: Internal server error
+
+  /api/products/{id}:
+    get:
+      summary: Get product by ID
+      tags: 
+        - Products
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the product to retrieve
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found
+        '500':
+          description: Internal server error
+
+    put:
+      summary: Update product by ID
+      tags: 
+        - Products
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the product to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: Product updated successfully
+        '404':
+          description: Product not found
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+
+    delete:
+      summary: Delete product by ID
+      tags: 
+        - Products
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the product to delete
+      responses:
+        '200':
+          description: Product deleted successfully
+        '404':
+          description: Product not found
+        '500':
+          description: Internal server error
+
+  /api/carts:
+    post:
+      summary: Create a new cart
+      tags: 
+        - Carts
+      responses:
+        '201':
+          description: Cart created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '500':
+          description: Internal server error
+
+  /api/carts/{cid}:
+    get:
+      summary: Get cart by ID
+      tags: 
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the cart to retrieve
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '404':
+          description: Cart not found
+        '500':
+          description: Internal server error
+
+    post:
+      summary: Add product to cart
+      tags: 
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the cart
+        - name: pid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The ID of the product to add to the cart
+      responses:
+        '200':
+          description: Product added to cart successfully
+        '404':
+          description: Cart or Product not found
+        '500':
+          description: Internal server error
+
+    delete:
+      summary: Remove product from cart
+      tags: 
+        - Carts
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the cart
+        - name: pid
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The ID of the product to remove from the cart
+      responses:
+        '200':
+          description: Product removed from cart successfully
+        '404':
+          description: Cart or Product not found
+        '500':
+          description: Internal server error
+
+  /api/users:
+    get:
+      summary: Get all users
+      tags: 
+        - Users
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '500':
+          description: Internal server error
+
+    post:
+      summary: Register a new user
+      tags: 
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: User registered successfully
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+
+  /api/users/{uid}:
+    get:
+      summary: Get user by ID
+      tags: 
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the user to retrieve
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+
+    put:
+      summary: Update user by ID
+      tags: 
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the user to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: User updated successfully
+        '404':
+          description: User not found
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+
+    delete:
+      summary: Delete user by ID
+      tags: 
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the user to delete
+      responses:
+        '200':
+          description: User deleted successfully
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        stock:
+          type: integer
+      example:
+        id: "607c191e810c19729de860ea"
+        title: "Product A"
+        description: "Description of Product A"
+        price: 100
+        stock: 10
+
+    Cart:
+      type: object
+      properties:
+        id:
+          type: string
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+      example:
+        id: "609c1fd5810c19729de8612d"
+        products:
+          - id: "607c191e810c19729de860ea"
+            title: "Product A"
+            description: "Description of Product A"
+            price: 100
+            stock: 10
+          - id: "607c191e810c19729de860eb"
+            title: "Product B"
+            description: "Description of Product B"
+            price: 200
+            stock: 5
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+      example:
+        id: "609c1fd5810c19729de8612d"
+        first_name: "John"
+        last_name: "Doe"
+        email: "john.doe@example.com"
+        role: "user"

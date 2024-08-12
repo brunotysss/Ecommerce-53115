@@ -19,6 +19,9 @@ const sessionRoutes = require('./routes/session.router');
 const logger = require('./config/logger');
 //const swaggerRoutes = require('./routes/swagger'); // Importar rutas de Swagger
 const errorHandler = require('./middleware/errorHandlebars');
+const swaggerJSDoc = require('swagger-jsdoc');
+const { serve, setup } = require('swagger-ui-express');
+
 
 const app = express();
 app.use(express.json());
@@ -29,7 +32,25 @@ app.use(express.urlencoded({ extended: true }));
 app.use((req, res, next) => {
   req.logger = logger;
   next();
+  
 });
+// Configuración de Swagger
+const swaggerOptions = {
+    definition: {
+        openapi: '3.0.1',
+        info: {
+            title: 'E-commerce API',
+            description: 'API documentation for the E-commerce application',
+            version: '1.0.0',
+        },
+    },
+    apis: [path.join(__dirname, '../docs/swagger.yml')],
+};
+
+const swaggerSpecs = swaggerJSDoc(swaggerOptions);
+
+// Ruta para Swagger UI
+app.use('/api-docs', serve, setup(swaggerSpecs));
 
 // Configurar Handlebars
 app.engine('handlebars', exphbs.engine());
