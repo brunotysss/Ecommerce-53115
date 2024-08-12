@@ -1,4 +1,5 @@
-const Ticket = require('../dao/mongo/models/ticket.model');
+//const Ticket = require('../dao/mongo/models/ticket.model');
+import Ticket from '../dao/mongo/models/ticket.model.js';
 
 class TicketService {
   async createTicket(ticketData) {
@@ -6,4 +7,7 @@ class TicketService {
   }
 }
 
-module.exports = new TicketService();
+export default new TicketService();
+
+
+//module.exports = new TicketService();

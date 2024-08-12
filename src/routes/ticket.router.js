@@ -1,8 +1,14 @@
-const { Router } = require('express');
+/*const { Router } = require('express');
 const TicketController = require('../controllers/ticket.controller');
+*/
+import { Router } from 'express';
+import { createTicket } from '../controllers/ticket.controller.js';
 
 const router = Router();
 
-router.post('/', TicketController.createTicket);
+router.post('/', createTicket);
 
-module.exports = router;
+
+export default router;
+
+//module.exports = router;

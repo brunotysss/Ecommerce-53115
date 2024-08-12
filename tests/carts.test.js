@@ -1,14 +1,13 @@
-// test/carts.test.js
-import chai from 'chai';
-import chaiHttp from 'chai-http';
-import server from '../src/app.js'; // Asegúrate de que apunta a tu aplicación
+import * as chai from 'chai';
+import supertest from 'supertest';
+import server from '../src/app.js';
 
-chai.use(chaiHttp); // Usa el plugin chai-http
-const { expect } = chai; // Extrae expect de chai
+const { expect } = chai;
+const requester = supertest(server);
 
 describe('Carts API', () => {
   it('should POST a new cart', (done) => {
-    chai.request(server)
+    requester
       .post('/api/carts')
       .end((err, res) => {
         expect(res).to.have.status(201);
@@ -19,7 +18,7 @@ describe('Carts API', () => {
 
   it('should GET a cart by ID', (done) => {
     const cartId = 'some_cart_id'; // Reemplaza con un ID válido de tu BD
-    chai.request(server)
+    requester
       .get(`/api/carts/${cartId}`)
       .end((err, res) => {
         expect(res).to.have.status(200);
@@ -31,7 +30,7 @@ describe('Carts API', () => {
   it('should ADD a product to a cart', (done) => {
     const cartId = 'some_cart_id'; // Reemplaza con un ID válido de tu BD
     const productId = 'some_product_id'; // Reemplaza con un ID válido de tu BD
-    chai.request(server)
+    requester
       .post(`/api/carts/${cartId}/product/${productId}`)
       .end((err, res) => {
         expect(res).to.have.status(200);
@@ -43,7 +42,7 @@ describe('Carts API', () => {
   it('should DELETE a product from a cart', (done) => {
     const cartId = 'some_cart_id'; // Reemplaza con un ID válido de tu BD
     const productId = 'some_product_id'; // Reemplaza con un ID válido de tu BD
-    chai.request(server)
+    requester
       .delete(`/api/carts/${cartId}/product/${productId}`)
       .end((err, res) => {
         expect(res).to.have.status(200);

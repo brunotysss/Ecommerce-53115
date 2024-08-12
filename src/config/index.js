@@ -1,8 +1,10 @@
-const { config } = require('dotenv')
+//const { config } = require('dotenv')
+import dotenv from 'dotenv';
+dotenv.config();
+//config()
 
-config()
-
-module.exports = {
+//module.exports = {
+    export default {
     jwtSecret: process.env.JWT_SECRET,
     refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
     mongoUri: process.env.MONGO_URI,

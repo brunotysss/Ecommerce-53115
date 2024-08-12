@@ -1,5 +1,6 @@
-const CartModel = require('./models/cart.model');
+//const CartModel = require('./models/cart.model');
 
+import CartModel from './models/cart.model.js';
 class CartDAO {
   async createCart() {
     return await CartModel.create({});
@@ -59,4 +60,5 @@ class CartDAO {
   }
 }
 
-module.exports = new CartDAO();
+export default new CartDAO();
+//module.exports = new CartDAO();

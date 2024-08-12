@@ -1,8 +1,13 @@
-const CartService = require('../services/cart.service');
+/*const CartService = require('../services/cart.service');
 const TicketService = require('../services/ticket.service');
 const ProductService = require('../services/product.service');
+*/
+import CartService from '../services/cart.service.js';
+import TicketService from '../services/ticket.service.js';
+import ProductService from '../services/product.service.js';
 
-exports.purchaseCart = async (req, res) => {
+//exports.purchaseCart = async (req, res) => {
+  export const purchaseCart = async (req, res) => {
   try {
     const cartId = req.params.cid;
     const cart = await CartService.getCartById(cartId);
@@ -51,8 +56,8 @@ exports.purchaseCart = async (req, res) => {
     res.status(500).json({ error: 'Failed to complete purchase', details: error.message });
   }
 };
-
-exports.createCart = async (req, res) => {
+//exports.createCart = async (req, res) => {
+  export const createCart = async (req, res) => {
   try {
     const newCart = await CartService.createCart();
     if (!newCart) {
@@ -64,7 +69,8 @@ exports.createCart = async (req, res) => {
   }
 };
 
-exports.getCartById = async (req, res) => {
+//exports.getCartById = async (req, res) => {
+  export const getCartById = async (req, res) => {
   try {
     const cart = await CartService.getCartById(req.params.cid);
     if (!cart) {
@@ -76,7 +82,8 @@ exports.getCartById = async (req, res) => {
   }
 };
 
-exports.addProductToCart = async (req, res) => {
+//exports.addProductToCart = async (req, res) => {
+  export const addProductToCart = async (req, res) => {
   try {
     const updatedCart = await CartService.addProductToCart(req.params.cid, req.params.pid);
     if (!updatedCart) {
@@ -88,7 +95,8 @@ exports.addProductToCart = async (req, res) => {
   }
 };
 
-exports.updateCart = async (req, res) => {
+//exports.updateCart = async (req, res) => {
+  export const updateCart = async (req, res) => {
   try {
     const updatedCart = await CartService.updateCart(req.params.cid, req.body.products);
     if (!updatedCart) {
@@ -100,7 +108,8 @@ exports.updateCart = async (req, res) => {
   }
 };
 
-exports.updateProductQuantity = async (req, res) => {
+//exports.updateProductQuantity = async (req, res) => {
+  export const updateProductQuantity =  async (req, res) => {
   try {
     const updatedCart = await CartService.updateProductQuantity(req.params.cid, req.params.pid, req.body.quantity);
     if (!updatedCart) {
@@ -112,7 +121,8 @@ exports.updateProductQuantity = async (req, res) => {
   }
 };
 
-exports.deleteProductFromCart = async (req, res) => {
+//exports.deleteProductFromCart = async (req, res) => {
+  export const deleteProductFromCart =  async (req, res) => {
   try {
     const updatedCart = await CartService.deleteProductFromCart(req.params.cid, req.params.pid);
     if (!updatedCart) {
@@ -124,7 +134,8 @@ exports.deleteProductFromCart = async (req, res) => {
   }
 };
 
-exports.deleteAllProductsFromCart = async (req, res) => {
+//exports.deleteAllProductsFromCart = async (req, res) => {
+   export const deleteAllProductsFromCart = async (req, res) => {
   try {
     const updatedCart = await CartService.deleteAllProductsFromCart(req.params.cid);
     if (!updatedCart) {

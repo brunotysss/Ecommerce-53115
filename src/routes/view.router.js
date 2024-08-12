@@ -1,7 +1,11 @@
-const { Router } = require('express');
+import { Router } from 'express';
+import ProductService from '../services/product.service.js';
+import CartService from '../services/cart.service.js';
+
+/*const { Router } = require('express');
 const ProductService = require('../services/product.service');
 const CartService = require('../services/cart.service');
-
+*/
 const router = Router();
 
 router.get('/products', async (req, res) => {
@@ -47,5 +51,7 @@ router.get('/login', (req, res) => {
     res.render('reset-password', { token });
   });
 
-module.exports = router;
+  export default router;
+
+//module.exports = router;
 

@@ -1,7 +1,10 @@
-const transporter = require('../config/transport');
+//const transporter = require('../config/transport');
+import transporter from '../config/transport.js';
 
-exports.sendResetPasswordEmail = async (to, link) => {
-  const mailOptions = {
+//exports.sendResetPasswordEmail = async (to, link) => {
+    export const sendResetPasswordEmail = async (to, link) => {
+  
+const mailOptions = {
     from: process.env.EMAIL_USER,
     to,
     subject: 'Password Reset',
@@ -15,3 +18,4 @@ exports.sendResetPasswordEmail = async (to, link) => {
     console.error('Error sending password reset email:', error);
   }
 };
+export default transporter;

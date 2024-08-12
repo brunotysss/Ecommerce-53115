@@ -1,5 +1,7 @@
-const ProductDAO = require('../dao/mongo/product.dao');
-const ProductDTO = require('../dto/product.dto');
+//const ProductDAO = require('../dao/mongo/product.dao');
+//const ProductDTO = require('../dto/product.dto');
+import ProductDAO from '../dao/mongo/product.dao.js';
+import ProductDTO from '../dto/product.dto.js';
 
 class ProductService {
     async getProducts(queryParams) {
@@ -38,7 +40,7 @@ class ProductService {
   }
 
   async createProduct(product) {
-    return await ProductDAO.create(product);
+    return await ProductDAO.createProduct(product);
   }
 
   async updateProduct(id, product) {
@@ -50,5 +52,6 @@ class ProductService {
     return await ProductDAO.deleteProduct(id);
   }
 }
+export default new ProductService();
 
-module.exports = new ProductService();
+//module.exports = new ProductService();

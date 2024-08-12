@@ -1,4 +1,4 @@
-const { Router } = require('express');
+/*const { Router } = require('express');
 const multer = require('multer');
 const UserController = require('../controllers/user.controller');
 const { authenticate, authorize } = require('../middleware/auth');
@@ -7,7 +7,16 @@ const bcrypt = require('bcrypt'); // Importar bcrypt
 const faker = require('faker');
 const path = require('path');  // Importar el módulo path
 const passport = require('passport');
-
+*/
+import { Router } from 'express';
+import multer from 'multer';
+import UserController from '../controllers/user.controller.js';
+import { authenticate, authorize } from '../middleware/auth.js';
+import User from '../dao/mongo/models/user.model.js'; // Importar el modelo User
+import bcrypt from 'bcrypt'; // Importar bcrypt
+import faker from 'faker';
+import path from 'path';  // Importar el módulo path
+import passport from 'passport';
 faker.locale = 'es'; 
 const router = Router();
 
@@ -97,4 +106,7 @@ router.delete('/', authenticate, authorize(['admin']), async (req, res) => {
   }
 });
 
-module.exports = router;
+
+export default router;
+
+//module.exports = router;

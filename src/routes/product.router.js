@@ -1,8 +1,14 @@
-const { Router } = require('express');
+/*const { Router } = require('express');
 const { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct } = require('../controllers/productController');
 const ProductModel = require('../dao/mongo/models/product.model');
 const { authenticate, authorize } = require('../middleware/auth');
 const faker = require('faker');
+*/
+import { Router } from 'express';
+import { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct } from '../controllers/productController.js';
+import ProductModel from '../dao/mongo/models/product.model.js';
+import { authenticate, authorize } from '../middleware/auth.js';
+import faker from 'faker';
 faker.locale = 'es';  // Configurar Faker.js para español
 const router = Router();
 
@@ -12,9 +18,9 @@ router.get('/:pid', getProductById);
 router.put('/:pid', updateProduct);
 router.delete('/:pid', deleteProduct);
 */
-router.post('/', authenticate, authorize(['admin', 'premium']), createProduct);
-router.put('/:pid', authenticate, authorize(['admin', 'premium']), updateProduct);
-router.delete('/:pid', authenticate, authorize(['admin', 'premium']), deleteProduct);
+router.post('/', authenticate, authorize(['Admin', 'premium']), createProduct);
+router.put('/:pid', authenticate, authorize(['Admin', 'premium']), updateProduct);
+router.delete('/:pid', authenticate, authorize(['Admin', 'premium']), deleteProduct);
 /*
 router.post('/', authenticate, authorize(['admin', 'premium']), ProductController.createProduct);
 router.put('/:id', authenticate, authorize(['admin', 'premium']), ProductController.updateProduct);
@@ -48,4 +54,6 @@ router.post('/init', async (req, res) => {
     }
   });
 
-module.exports = router;
+  export default router;
+
+//module.exports = router;

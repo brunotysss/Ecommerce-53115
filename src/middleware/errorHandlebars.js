@@ -1,7 +1,7 @@
-const createError = require('http-errors');
-const logger = require('../config/logger');
+import createError from 'http-errors';
+import logger from '../config/logger.js';
 
-module.exports = (err, req, res, next) => {
+const errorHandler = (err, req, res, next) => {
   if (res.headersSent) {
     return next(err);
   }
@@ -11,3 +11,6 @@ module.exports = (err, req, res, next) => {
   const error = createError(err.status || 500, err.message);
   res.status(error.status).json({ error: error.message });
 };
+
+// Aquí es donde defines la exportación predeterminada
+export default errorHandler;

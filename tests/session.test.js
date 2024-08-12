@@ -1,12 +1,9 @@
-// test/sessions.test.js
-import chai from 'chai';
-import chaiHttp from 'chai-http';
-import server from '../src/app.js'; // Asegúrate de que apunta a tu aplicación
+import * as chai from 'chai';
+import supertest from 'supertest';
+import server from '../src/app.js';
 
-chai.use(chaiHttp); // Usa el plugin chai-http
-const { expect } = chai; // Extrae expect de chai
-
-
+const { expect } = chai;
+const requester = supertest(server);
 describe('Sessions API', () => {
   it('should REGISTER a new user', (done) => {
     const user = {

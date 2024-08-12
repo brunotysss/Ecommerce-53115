@@ -1,5 +1,6 @@
-const ProductModel = require('./models/product.model');
+//const ProductModel = require('./models/product.model');
 
+import ProductModel from "./models/product.model.js";
 class ProductDAO {
   async getProducts(filters, options) {
     const query = ProductModel.find(filters);
@@ -32,4 +33,6 @@ class ProductDAO {
   }
 }
 
-module.exports = new ProductDAO();
+export default new ProductDAO();
+
+//module.exports = new ProductDAO();

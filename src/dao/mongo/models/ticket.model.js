@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+//const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const ticketSchema = new mongoose.Schema({
   code: { type: String, unique: true, required: true },
@@ -7,4 +8,6 @@ const ticketSchema = new mongoose.Schema({
   purchaser: { type: String, required: true }
 });
 
-module.exports = mongoose.model('Ticket', ticketSchema);
+export default mongoose.model('Ticket', ticketSchema);
+
+//module.exports = mongoose.model('Ticket', ticketSchema);

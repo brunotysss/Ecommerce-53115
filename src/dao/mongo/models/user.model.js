@@ -1,5 +1,10 @@
-const mongoose = require('mongoose');
+/*const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+*/
+import mongoose from 'mongoose';
+
+const { Schema } = mongoose;
+
 
 const userSchema = new Schema({
   first_name: { type: String, required: true },
@@ -19,4 +24,6 @@ const userSchema = new Schema({
   last_connection: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('User', userSchema);
+export default mongoose.model('User', userSchema);
+
+//module.exports = mongoose.model('User', userSchema);

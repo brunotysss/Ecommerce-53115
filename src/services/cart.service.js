@@ -1,6 +1,10 @@
-const CartDAO = require('../dao/mongo/cart.dao');
+/*const CartDAO = require('../dao/mongo/cart.dao');
 const ProductDAO = require('../dao/mongo/product.dao');
 const CartDTO = require('../dto/cart.dto');
+*/
+import CartDAO from '../dao/mongo/cart.dao.js';
+import ProductDAO from '../dao/mongo/product.dao.js';
+import CartDTO from '../dto/cart.dto.js';
 
 class CartService {
   async createCart() {
@@ -76,4 +80,7 @@ class CartService {
   }
 }
 
-module.exports = new CartService();
+
+export default new CartService();
+
+//module.exports = new CartService();

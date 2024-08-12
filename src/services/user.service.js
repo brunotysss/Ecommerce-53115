@@ -1,5 +1,8 @@
-const UserDAO = require('../dao/mongo/user.dao');
+/*const UserDAO = require('../dao/mongo/user.dao');
 const UserDTO = require('../dto/user.dto');
+*/
+import UserDAO from '../dao/mongo/user.dao.js';
+import UserDTO from '../dto/user.dto.js';
 
 class UserService {
   async createUser(userData) {
@@ -48,5 +51,6 @@ class UserService {
 }
 
 
+export default new UserService();
 
-module.exports = new UserService();
+//module.exports = new UserService();

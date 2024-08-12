@@ -1,4 +1,4 @@
-require('dotenv').config();
+/*require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
@@ -21,8 +21,35 @@ const logger = require('./config/logger');
 const errorHandler = require('./middleware/errorHandlebars');
 const swaggerJSDoc = require('swagger-jsdoc');
 const { serve, setup } = require('swagger-ui-express');
+*/
+import 'dotenv/config';
+import express from 'express';
+import mongoose from 'mongoose';
+import cookieParser from 'cookie-parser';
+import passport from 'passport';
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';  // Aquí ya estamos importando 'join'
+import initializePassport from './config/passport.js';
+import compression from 'express-compression';
+import productRoutes from './routes/product.router.js';
+import cartRoutes from './routes/cart.router.js';
+import viewsRoutes from './routes/view.router.js';
+import ticketRoutes from './routes/ticket.router.js';
+import userRoutes from './routes/user.router.js';
+import exphbs from 'express-handlebars';
+// import path from 'path'; // Esta línea no es necesaria
+import sessionRoutes from './routes/session.router.js';
+import logger from './config/logger.js';
+//import swaggerRoutes from './routes/swagger'; // Importar rutas de Swagger si es necesario
+import errorHandler from './middleware/errorHandlebars.js';
+import swaggerJSDoc from 'swagger-jsdoc';
+import { serve, setup } from 'swagger-ui-express';
 
-
+// Obtener el directorio actual usando import.meta.url
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
@@ -44,7 +71,9 @@ const swaggerOptions = {
             version: '1.0.0',
         },
     },
-    apis: [path.join(__dirname, '../docs/swagger.yml')],
+  //  apis: [path.join(__dirname, '../docs/swagger.yml')],
+  apis: [join(__dirname, '../docs/swagger.yml')],
+
 };
 
 const swaggerSpecs = swaggerJSDoc(swaggerOptions);
@@ -118,3 +147,5 @@ const main = async () => {
 };
 
 main();
+// Aquí está la exportación por defecto
+export default app;

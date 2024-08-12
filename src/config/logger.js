@@ -1,5 +1,6 @@
 // src/config/logger.js
-const { createLogger, format, transports } = require('winston');
+//const { createLogger, format, transports } = require('winston');
+import { createLogger, format, transports } from 'winston';
 
 const logger = createLogger({
   level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
@@ -24,5 +25,6 @@ if (process.env.NODE_ENV !== 'production') {
     )
   }));
 }
+export default logger;
 
-module.exports = logger;
+//module.exports = logger;

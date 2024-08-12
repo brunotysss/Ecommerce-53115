@@ -1,7 +1,8 @@
-const ProductService = require('../services/product.service');
+//const ProductService = require('../services/product.service');
+import ProductService from '../services/product.service.js';
 
-
-exports.getAllProducts = async (req, res) => {
+//exports.getAllProducts = async (req, res) => {
+  export const getAllProducts = async (req, res) => {
     try {
       const products = await ProductService.getProducts(req.query);
       if (!products || products.payload.length === 0) {
@@ -13,7 +14,8 @@ exports.getAllProducts = async (req, res) => {
     }
   };
 
-  exports.getProductById = async (req, res) => {
+ // exports.getProductById = async (req, res) => {
+  export const getProductById = async (req, res) => {
     try {
       const product = await ProductService.getProductById(req.params.pid);
       if (!product) {
@@ -38,7 +40,10 @@ exports.getAllProducts = async (req, res) => {
     }
   };
   */
-  exports.createProduct = async (req, res) => {
+  //exports.createProduct = async (req, res) => {
+    export const createProduct = async (req, res) => {
+      //console.log('Usuario autenticado:', req.user); // Agregar log para ver el usuario autenticado
+
     try {
       const productData = {
         ...req.body,
@@ -52,20 +57,9 @@ exports.getAllProducts = async (req, res) => {
     }
   };
   
-      /*
-  exports.updateProduct = async (req, res) => {
-    try {
-      const updatedProduct = await ProductService.updateProduct(req.params.pid, req.body);
-      if (!updatedProduct) {
-        return res.status(404).json({ error: 'Product not found' });
-      }
-      res.json(updatedProduct);
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to update product', details: error.message });
-    }
-  };*/
 
-  exports.updateProduct = async (req, res) => {
+ // exports.updateProduct = async (req, res) => {
+  export const updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
         const updates = req.body;
@@ -86,11 +80,14 @@ exports.getAllProducts = async (req, res) => {
     }
 };
 
-exports.deleteProduct = async (req, res) => {
+//exports.deleteProduct = async (req, res) => {
+  export const deleteProduct = async (req, res) => {
   try {
-      const { id } = req.params;  // Aquí puedes usar 'pid' si prefieres, solo asegúrate de que sea consistente
+    const { pid } = req.params;
+    console.log('PID recibido:', pid);
 
       const product = await ProductService.getProductById(id);
+      
       if (!product) {
           return res.status(404).json({ error: 'Product not found' });
       }

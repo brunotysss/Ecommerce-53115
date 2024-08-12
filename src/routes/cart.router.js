@@ -1,15 +1,21 @@
-const { Router } = require('express');
+/*const { Router } = require('express');
 const CartController = require('../controllers/cartController'); // Asegúrate de importar el controlador correctamente
-
+*/
+import { Router } from 'express';
+//import CartController from '../controllers/cartController.js'; 
 const router = Router();
+import { createCart, getCartById, addProductToCart, purchaseCart, updateCart, updateProductQuantity, deleteProductFromCart, deleteAllProductsFromCart } from '../controllers/cartController.js';
 
-router.post('/', CartController.createCart);
-router.get('/:cid', CartController.getCartById);
-router.post('/:cid/product/:pid', CartController.addProductToCart);
-router.post('/:cid/purchase', CartController.purchaseCart);
-router.put('/:cid', CartController.updateCart);
-router.put('/:cid/product/:pid', CartController.updateProductQuantity);
-router.delete('/:cid/product/:pid', CartController.deleteProductFromCart);
-router.delete('/:cid', CartController.deleteAllProductsFromCart);
+router.post('/', createCart);
+router.get('/:cid', getCartById);
+router.post('/:cid/product/:pid', addProductToCart);
+router.post('/:cid/purchase', purchaseCart);
+router.put('/:cid', updateCart);
+router.put('/:cid/product/:pid', updateProductQuantity);
+router.delete('/:cid/product/:pid',deleteProductFromCart);
+router.delete('/:cid', deleteAllProductsFromCart);
 
-module.exports = router;
+
+export default router;
+
+//module.exports = router;

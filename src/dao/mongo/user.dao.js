@@ -1,4 +1,6 @@
-const User = require('../mongo/models/user.model');
+//const User = require('../mongo/models/user.model');
+import User from '../mongo/models/user.model.js';
+
 
 class UserDAO {
   async createUser(userData) {
@@ -48,4 +50,5 @@ class UserDAO {
   }
 }
 
-module.exports = new UserDAO();
+export default new UserDAO();
+//module.exports = new UserDAO();
