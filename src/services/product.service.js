@@ -2,6 +2,8 @@
 //const ProductDTO = require('../dto/product.dto');
 import ProductDAO from '../dao/mongo/product.dao.js';
 import ProductDTO from '../dto/product.dto.js';
+import { sendMail } from '../config/transport.js';
+
 
 class ProductService {
     async getProducts(queryParams) {
@@ -47,11 +49,49 @@ class ProductService {
     const updatedProduct = await ProductDAO.updateProduct(id, product);
     return new ProductDTO(updatedProduct);
   }
-
+/*
   async deleteProduct(id) {
     return await ProductDAO.deleteProduct(id);
+  }*/
+  async deleteProduct(pid, user) {
+    // Obtener el producto desde la capa DAO
+    const product = await ProductDAO.getProductById(pid);
+  
+    if (!product) {
+      throw new Error('Product not found');
+    }
+
+    // Verificar que el usuario premium solo pueda eliminar sus propios productos
+    if (user.role === 'premium' && product.owner !== user.email) {
+      throw new Error('You can only delete your own products');
+    }
+     
+    // Eliminar el producto a través de la capa DAO
+    await ProductDAO.deleteProduct(pid);
+    // Si el propietario del producto es premium, enviarle un correo
+    if (user.role === 'premium') {
+      console.log('si entro al if');
+      const mailOptions = {
+        to: product.owner,
+        subject: 'Producto eliminado',
+        text: `Hola, el producto "${product.title}" ha sido eliminado de la tienda.`,
+      };
+
+
+      try {
+      await sendMail(mailOptions.to, mailOptions.subject, mailOptions.text);
+    } catch (error) {
+      console.error(`Error al enviar correo a ${mailOptions.to}:`, error);
+    }
   }
+
+
+    return { message: 'Product deleted successfully' };
+  
+} 
 }
+
+
 export default new ProductService();
 
 //module.exports = new ProductService();

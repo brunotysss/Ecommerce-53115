@@ -1,24 +1,25 @@
-/*const { Router } = require('express');
-const multer = require('multer');
-const UserController = require('../controllers/user.controller');
-const { authenticate, authorize } = require('../middleware/auth');
-const User = require('../dao/mongo/models/user.model'); // Importar el modelo User
-const bcrypt = require('bcrypt'); // Importar bcrypt
-const faker = require('faker');
-const path = require('path');  // Importar el módulo path
-const passport = require('passport');
-*/
+
 import { Router } from 'express';
 import multer from 'multer';
 import UserController from '../controllers/user.controller.js';
 import { authenticate, authorize } from '../middleware/auth.js';
 import User from '../dao/mongo/models/user.model.js'; // Importar el modelo User
 import bcrypt from 'bcrypt'; // Importar bcrypt
-import faker from 'faker';
-import path from 'path';  // Importar el módulo path
+import faker from 'faker';  // Importar el módulo path
 import passport from 'passport';
+
+import path from 'path';  // Importar el módulo path
+import { fileURLToPath } from 'url';
+
+
+
+
 faker.locale = 'es'; 
 const router = Router();
+
+// Obtener el directorio actual usando import.meta.url
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -89,7 +90,12 @@ router.get('/', authenticate, authorize(['admin']), async (req, res) => {
   }
 });
   
+
+router.delete('/', authenticate, authorize(['admin']), UserController.deleteInactiveUsers);
+
 // Ruta para eliminar usuarios inactivos
+
+/*
 router.delete('/', authenticate, authorize(['admin']), async (req, res) => {
   try {
     const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
@@ -105,7 +111,7 @@ router.delete('/', authenticate, authorize(['admin']), async (req, res) => {
     res.status(500).json({ error: 'Failed to delete inactive users', details: error.message });
   }
 });
-
+*/
 
 export default router;
 

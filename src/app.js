@@ -1,27 +1,4 @@
-/*require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const cookieParser = require('cookie-parser');
-const passport = require('passport');
-const session = require('express-session');
-const MongoStore = require('connect-mongo');
-const { join } = require('path');
-const { initializePassport } = require('./config/passport');
-const compression = require('express-compression');
-const productRoutes = require('./routes/product.router');
-const cartRoutes = require('./routes/cart.router');
-const viewsRoutes = require('./routes/view.router');
-const ticketRoutes = require('./routes/ticket.router');
-const userRoutes = require('./routes/user.router');
-const exphbs = require('express-handlebars');
-const path = require('path'); // Asegúrate de requerir path
-const sessionRoutes = require('./routes/session.router');
-const logger = require('./config/logger');
-//const swaggerRoutes = require('./routes/swagger'); // Importar rutas de Swagger
-const errorHandler = require('./middleware/errorHandlebars');
-const swaggerJSDoc = require('swagger-jsdoc');
-const { serve, setup } = require('swagger-ui-express');
-*/
+
 import 'dotenv/config';
 import express from 'express';
 import mongoose from 'mongoose';
@@ -46,7 +23,13 @@ import logger from './config/logger.js';
 import errorHandler from './middleware/errorHandlebars.js';
 import swaggerJSDoc from 'swagger-jsdoc';
 import { serve, setup } from 'swagger-ui-express';
+import emailRouter from './routes/email.router.js'; // Asegúrate de que la ruta sea correcta
 
+
+
+
+//Admin@example.com usuario de prueba
+//Admin@example.com usuario de prueba
 // Obtener el directorio actual usando import.meta.url
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -111,7 +94,7 @@ app.use('/api/users', userRoutes);
 app.use('/', viewsRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/sessions', sessionRoutes);
-
+app.use('/api/email', emailRouter);
 app.get('/loggerTest', (req, res) => {
   req.logger.debug('This is a debug log');
   req.logger.http('This is an http log');

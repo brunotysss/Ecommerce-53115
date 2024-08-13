@@ -81,12 +81,13 @@ import ProductService from '../services/product.service.js';
 };
 
 //exports.deleteProduct = async (req, res) => {
+  /*
   export const deleteProduct = async (req, res) => {
   try {
     const { pid } = req.params;
     console.log('PID recibido:', pid);
 
-      const product = await ProductService.getProductById(id);
+      const product = await ProductService.getProductById(pid);
       
       if (!product) {
           return res.status(404).json({ error: 'Product not found' });
@@ -96,9 +97,25 @@ import ProductService from '../services/product.service.js';
           return res.status(403).json({ error: 'You can only delete your own products' });
       }
 
-      await ProductService.deleteProduct(id);
+      await ProductService.deleteProduct(pid);
       res.json({ message: 'Product deleted successfully' });
   } catch (error) {
       res.status(500).json({ error: 'Failed to delete product', details: error.message });
+  }
+};
+*/
+export const deleteProduct = async (req, res) => {
+  try {
+    const { pid } = req.params;
+    const result = await ProductService.deleteProduct(pid, req.user);
+    res.json(result);
+  } catch (error) {
+    if (error.message === 'Product not found') {
+      return res.status(404).json({ error: error.message });
+    }
+    if (error.message === 'You can only delete your own products') {
+      return res.status(403).json({ error: error.message });
+    }
+    res.status(500).json({ error: 'Failed to delete product', details: error.message });
   }
 };

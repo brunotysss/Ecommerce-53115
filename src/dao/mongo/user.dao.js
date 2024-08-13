@@ -14,13 +14,18 @@ class UserDAO {
   async getUserById(userId) {
     return await User.findById(userId);
   }
-
+  async getAllUsers() {
+    return await User.find(); // Obtener todos los usuarios
+  }
   async updateUser(userId, updateData) {
     return await User.findByIdAndUpdate(userId, updateData, { new: true });
   }
 
   async deleteUser(userId) {
     return await User.findByIdAndDelete(userId);
+  }
+  async findInactiveUsers(date) {
+    return await User.find({ last_connection: { $lt: date } });
   }
 
   async getUserByRefreshToken(token) {
@@ -48,6 +53,15 @@ class UserDAO {
     user.role = 'premium';
     return await user.save();
   }
+  async upgradeUserToPremium(userId, isAdminUpgrade = false) {
+    const updateData = { role: 'premium' };
+
+    if (isAdminUpgrade) {
+        updateData.isAdminUpgrade = true; // Marcar el usuario como actualizado por admin sin documentos completos
+    }
+
+    return await User.findByIdAndUpdate(userId, updateData, { new: true });
+}
 }
 
 export default new UserDAO();

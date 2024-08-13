@@ -9,7 +9,8 @@ class UserDTO {
     this.documents = user.documents;
     this.cart = user.cart;
     this.last_connection = user.last_connection;
-    this.refreshTokens = user.refreshTokens; // Asegúrate de incluir refreshTokens
+    this.refreshTokens = user.refreshTokens; // Asegúrate de incluir refreshToken
+    this.isAdminUpgrade = user.isAdminUpgrade; // Si estás usando este campo
 
     // Excluimos el password y los tokens de actualización de esta representación
   }

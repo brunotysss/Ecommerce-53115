@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import ProductService from '../services/product.service.js';
 import CartService from '../services/cart.service.js';
+import UserController from '../controllers/user.controller.js';
+import { authenticate, authorize } from '../middleware/auth.js'; // Asegúrate de usar el middleware de autenticación
 
 /*const { Router } = require('express');
 const ProductService = require('../services/product.service');
@@ -50,6 +52,12 @@ router.get('/login', (req, res) => {
     const { token } = req.query;
     res.render('reset-password', { token });
   });
+
+
+
+// Vista para gestionar usuarios (solo accesible por el administrador)
+router.get('/admin/manage-users', authenticate, authorize(['admin']), UserController.manageUsers);
+
 
   export default router;
 

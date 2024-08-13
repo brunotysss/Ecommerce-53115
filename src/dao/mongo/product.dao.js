@@ -27,9 +27,17 @@ class ProductDAO {
   async updateProduct(id, product) {
     return await ProductModel.findByIdAndUpdate(id, product, { new: true });
   }
-
+/*
   async deleteProduct(id) {
     return await ProductModel.findByIdAndDelete(id);
+  }*/
+  async deleteProduct(id) {
+    const product = await ProductModel.findById(id);
+    if (!product) {
+      throw new Error('Product not found');
+    }
+    await ProductModel.findByIdAndDelete(id); // Elimina el producto directamente
+    return product;
   }
 }
 

@@ -1,4 +1,12 @@
 <h1>Gestionar Usuarios</h1>
+
+{{#if successMessage}}
+  <p style="color:green;">{{successMessage}}</p>
+{{/if}}
+{{#if errorMessage}}
+  <p style="color:red;">{{errorMessage}}</p>
+{{/if}}
+
 <table>
   <thead>
     <tr>
@@ -6,6 +14,7 @@
       <th>Email</th>
       <th>Rol</th>
       <th>Acciones</th>
+      <th>Advertencia</th> <!-- Nueva columna -->
     </tr>
   </thead>
   <tbody>
@@ -14,6 +23,7 @@
       <td>{{this.first_name}} {{this.last_name}}</td>
       <td>{{this.email}}</td>
       <td>{{this.role}}</td>
+    <td>{{this.id}}</td>
       <td>
         <form action="/api/users/premium/{{this._id}}" method="POST">
           <button type="submit">Cambiar Rol</button>
@@ -21,6 +31,11 @@
         <form action="/api/users/delete/{{this._id}}" method="POST">
           <button type="submit">Eliminar Usuario</button>
         </form>
+      </td>
+      <td>
+        {{#if this.isAdminUpgrade}}
+          <p style="color:red;">Falta documentación</p>
+        {{/if}}
       </td>
     </tr>
     {{/each}}
