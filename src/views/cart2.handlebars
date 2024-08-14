@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart</title>
+</head>
+<body>
+    <h1>Cart</h1>
+    {{#each products}}
+        <div>
+            <h2>{{this.product.title}}</h2>
+            <p>Quantity: {{this.quantity}}</p>
+            <button onclick="removeFromCart('{{this.product.id}}')">Remove from Cart</button>
+        </div>
+    {{/each}}
+    <script>
+        function removeFromCart(productId) {
+            fetch(`/api/carts/remove/${productId}`, {
+                method: 'DELETE'
+            }).then(response => {
+                if (response.ok) {
+                    alert('Product removed from cart');
+                    location.reload();
+                } else {
+                    alert('Failed to remove product from cart');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

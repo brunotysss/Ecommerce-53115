@@ -62,6 +62,21 @@ class UserDAO {
 
     return await User.findByIdAndUpdate(userId, updateData, { new: true });
 }
+async getUserByResetToken(token) {
+  return User.findOne({ resetPasswordToken: token });
+}
+
+async updateUser(user) {
+  return user.save();
+}
+
+  // Renombra este método a `updateUserFields`
+  async updateUserFields(userId, updateData) {
+    return await User.findByIdAndUpdate(userId, updateData, { new: true });
+  }
+
+
+
 }
 
 export default new UserDAO();

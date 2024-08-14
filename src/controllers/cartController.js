@@ -1,13 +1,28 @@
-/*const CartService = require('../services/cart.service');
-const TicketService = require('../services/ticket.service');
-const ProductService = require('../services/product.service');
-*/
 import CartService from '../services/cart.service.js';
 import TicketService from '../services/ticket.service.js';
 import ProductService from '../services/product.service.js';
 
-//exports.purchaseCart = async (req, res) => {
-  export const purchaseCart = async (req, res) => {
+// Obtener carrito por ID de usuario
+export const getCartByUser = async (req, res) => {
+  try {
+    const userId = req.user.id; // Asegúrate de usar el ID del usuario autenticado
+    
+    const cart = await CartService.getCartByUserId(userId);
+    
+    if (!cart) {
+      return res.status(404).json({ error: 'Cart not found' });
+    }
+
+    res.render('cart', { cart }); // Renderiza la vista `cart.handlebars` con los datos del carrito
+  } catch (error) {
+    console.error("Error al obtener el carrito del usuario:", error.message);
+    res.status(500).json({ error: 'Failed to fetch cart', details: error.message });
+  }
+};
+
+/*
+// Comprar carrito
+const purchaseCart = async (req, res) => {
   try {
     const cartId = req.params.cid;
     const cart = await CartService.getCartById(cartId);
@@ -32,7 +47,6 @@ import ProductService from '../services/product.service.js';
       }
     }
 
-    // Crear el ticket
     if (productsToPurchase.length > 0) {
       const ticketData = {
         code: `TCK-${Date.now()}`,
@@ -44,7 +58,6 @@ import ProductService from '../services/product.service.js';
       await TicketService.createTicket(ticketData);
     }
 
-    // Actualizar el carrito
     cart.products = productsUnavailable;
     await cart.save();
 
@@ -56,10 +69,33 @@ import ProductService from '../services/product.service.js';
     res.status(500).json({ error: 'Failed to complete purchase', details: error.message });
   }
 };
-//exports.createCart = async (req, res) => {
-  export const createCart = async (req, res) => {
+*/
+
+
+export const purchaseCart = async (req, res) => {
   try {
-    const newCart = await CartService.createCart();
+      const userId = req.user.id;
+      const cartId = req.params.cid;
+
+      const { ticket, errors } = await CartService.purchaseCart(cartId, userId);
+
+      // Redirigir a la vista del ticket
+      if (ticket) {
+          return res.render('ticket', { ticket, errors });
+      } else {
+          return res.status(400).json({ error: 'No se pudo generar el ticket.' });
+      }
+
+  } catch (error) {
+      res.status(500).json({ error: 'Failed to complete purchase', details: error.message });
+  }
+};
+
+
+// Crear un nuevo carrito
+const createCart = async (req, res) => {
+  try {
+    const newCart = await CartService.createCart(req.user.id);
     if (!newCart) {
       return res.status(400).json({ error: 'Failed to create cart' });
     }
@@ -69,8 +105,8 @@ import ProductService from '../services/product.service.js';
   }
 };
 
-//exports.getCartById = async (req, res) => {
-  export const getCartById = async (req, res) => {
+// Obtener carrito por ID
+const getCartById = async (req, res) => {
   try {
     const cart = await CartService.getCartById(req.params.cid);
     if (!cart) {
@@ -82,21 +118,41 @@ import ProductService from '../services/product.service.js';
   }
 };
 
-//exports.addProductToCart = async (req, res) => {
-  export const addProductToCart = async (req, res) => {
+// Agregar producto al carrito
+const addProductToCart = async (req, res) => {
   try {
-    const updatedCart = await CartService.addProductToCart(req.params.cid, req.params.pid);
+    const userId = req.user.id;
+    const productId = req.params.pid;
+
+    let cart = await CartService.getCartByUserId(userId);
+  
+    if (!cart) {
+    
+
+      cart = await CartService.createCart(userId);
+
+    }
+
+    if (!cart) {
+     
+      return res.status(500).json({ error: 'Failed to create or retrieve cart' });
+    }
+
+    const updatedCart = await CartService.addProductToCart(cart.id, productId);
     if (!updatedCart) {
       return res.status(404).json({ error: 'Cart or product not found' });
     }
+
     res.json(updatedCart);
   } catch (error) {
+;
     res.status(500).json({ error: 'Failed to add product to cart', details: error.message });
   }
 };
 
-//exports.updateCart = async (req, res) => {
-  export const updateCart = async (req, res) => {
+
+// Actualizar carrito
+const updateCart = async (req, res) => {
   try {
     const updatedCart = await CartService.updateCart(req.params.cid, req.body.products);
     if (!updatedCart) {
@@ -108,8 +164,8 @@ import ProductService from '../services/product.service.js';
   }
 };
 
-//exports.updateProductQuantity = async (req, res) => {
-  export const updateProductQuantity =  async (req, res) => {
+// Actualizar la cantidad de un producto en el carrito
+const updateProductQuantity = async (req, res) => {
   try {
     const updatedCart = await CartService.updateProductQuantity(req.params.cid, req.params.pid, req.body.quantity);
     if (!updatedCart) {
@@ -121,8 +177,8 @@ import ProductService from '../services/product.service.js';
   }
 };
 
-//exports.deleteProductFromCart = async (req, res) => {
-  export const deleteProductFromCart =  async (req, res) => {
+// Eliminar un producto del carrito
+const deleteProductFromCart = async (req, res) => {
   try {
     const updatedCart = await CartService.deleteProductFromCart(req.params.cid, req.params.pid);
     if (!updatedCart) {
@@ -134,8 +190,8 @@ import ProductService from '../services/product.service.js';
   }
 };
 
-//exports.deleteAllProductsFromCart = async (req, res) => {
-   export const deleteAllProductsFromCart = async (req, res) => {
+// Eliminar todos los productos del carrito
+const deleteAllProductsFromCart = async (req, res) => {
   try {
     const updatedCart = await CartService.deleteAllProductsFromCart(req.params.cid);
     if (!updatedCart) {
@@ -145,4 +201,17 @@ import ProductService from '../services/product.service.js';
   } catch (error) {
     res.status(500).json({ error: 'Failed to delete all products from cart', details: error.message });
   }
+};
+
+// Exportamos todas las funciones en un objeto
+export default {
+  getCartByUser,
+  purchaseCart,
+  createCart,
+  getCartById,
+  addProductToCart,
+  updateCart,
+  updateProductQuantity,
+  deleteProductFromCart,
+  deleteAllProductsFromCart
 };

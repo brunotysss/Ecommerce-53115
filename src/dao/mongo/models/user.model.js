@@ -21,7 +21,7 @@ const userSchema = new Schema({
       reference: { type: String },
     },
   ],
-  last_connection: { type: Date, default: Date.now },
+  last_connection: { type: Date,   default: null},
   isAdminUpgrade: { type: Boolean, default: false }  // Aquí se agrega el campo isAdminUpgrade
 
 });

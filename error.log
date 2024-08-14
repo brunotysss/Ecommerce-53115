@@ -1,0 +1,10 @@
+{"level":"error","message":"500 - Missing helper: \"multiply\" - /api/carts/my-cart - GET - ::1","service":"user-service","timestamp":"2024-08-14 13:37:31"}
+{"level":"error","message":"500 - Missing helper: \"multiply\" - /my-cart - GET - ::1","service":"user-service","timestamp":"2024-08-14 13:53:04"}
+{"level":"error","message":"500 - Missing helper: \"multiply\" - /my-cart - GET - ::1","service":"user-service","timestamp":"2024-08-14 14:02:11"}
+{"level":"error","message":"500 - Missing helper: \"multiply\" - /my-cart - GET - ::1","service":"user-service","timestamp":"2024-08-14 14:04:28"}
+{"level":"error","message":"500 - Missing helper: \"multiply\" - /my-cart - GET - ::1","service":"user-service","timestamp":"2024-08-14 14:06:07"}
+{"level":"error","message":"500 - Missing helper: \"multiply\" - /my-cart - GET - ::1","service":"user-service","timestamp":"2024-08-14 14:06:34"}
+{"level":"error","message":"500 - Missing helper: \"multiply\" - /my-cart - GET - ::1","service":"user-service","timestamp":"2024-08-14 14:08:49"}
+{"level":"error","message":"500 - Missing helper: \"multiply\" - /my-cart - GET - ::1","service":"user-service","timestamp":"2024-08-14 14:09:06"}
+{"level":"error","message":"500 - Missing helper: \"multiply\" - /my-cart - GET - ::1","service":"user-service","timestamp":"2024-08-14 14:13:58"}
+{"level":"error","message":"500 - Missing helper: \"multiply\" - /my-cart - GET - ::1","service":"user-service","timestamp":"2024-08-14 14:15:29"}

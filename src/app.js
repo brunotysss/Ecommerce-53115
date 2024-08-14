@@ -15,7 +15,6 @@ import cartRoutes from './routes/cart.router.js';
 import viewsRoutes from './routes/view.router.js';
 import ticketRoutes from './routes/ticket.router.js';
 import userRoutes from './routes/user.router.js';
-import exphbs from 'express-handlebars';
 // import path from 'path'; // Esta línea no es necesaria
 import sessionRoutes from './routes/session.router.js';
 import logger from './config/logger.js';
@@ -24,6 +23,7 @@ import errorHandler from './middleware/errorHandlebars.js';
 import swaggerJSDoc from 'swagger-jsdoc';
 import { serve, setup } from 'swagger-ui-express';
 import emailRouter from './routes/email.router.js'; // Asegúrate de que la ruta sea correcta
+import exphbs from 'express-handlebars';
 
 
 
@@ -34,6 +34,24 @@ import emailRouter from './routes/email.router.js'; // Asegúrate de que la ruta
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const app = express();
+
+const hbs = exphbs.create({
+  defaultLayout: 'main',
+  runtimeOptions: {
+    allowProtoPropertiesByDefault: true,
+    allowProtoMethodsByDefault: true
+  },
+  helpers: {
+    multiply: (a, b) => {
+      a * b
+  
+      return a * b;
+    }}
+});
+
+app.engine('handlebars', hbs.engine); // Usar la instancia personalizada de Handlebars
+app.set('view engine', 'handlebars');
+app.set('views', join(__dirname, 'views'));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));

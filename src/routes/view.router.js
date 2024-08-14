@@ -3,6 +3,7 @@ import ProductService from '../services/product.service.js';
 import CartService from '../services/cart.service.js';
 import UserController from '../controllers/user.controller.js';
 import { authenticate, authorize } from '../middleware/auth.js'; // Asegúrate de usar el middleware de autenticación
+import CartController from '../controllers/cartController.js';
 
 /*const { Router } = require('express');
 const ProductService = require('../services/product.service');
@@ -57,6 +58,7 @@ router.get('/login', (req, res) => {
 
 // Vista para gestionar usuarios (solo accesible por el administrador)
 router.get('/admin/manage-users', authenticate, authorize(['admin']), UserController.manageUsers);
+router.get('/my-cart', authenticate, CartController.getCartByUser);
 
 
   export default router;

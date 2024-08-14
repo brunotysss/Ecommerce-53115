@@ -70,7 +70,7 @@ class ProductService {
     await ProductDAO.deleteProduct(pid);
     // Si el propietario del producto es premium, enviarle un correo
     if (user.role === 'premium') {
-      console.log('si entro al if');
+
       const mailOptions = {
         to: product.owner,
         subject: 'Producto eliminado',

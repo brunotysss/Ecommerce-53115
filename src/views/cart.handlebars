@@ -3,26 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <title>Cart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            background-color: #333;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 20px;
+        }
+
+        .cart-container {
+            width: 80%;
+            margin: 20px auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .actions button {
+            padding: 10px 15px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .actions button:hover {
+            background-color: #c82333;
+        }
+
+        .finalize-button {
+            margin-top: 20px;
+            padding: 15px 30px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .finalize-button:hover {
+            background-color: #218838;
+        }
+    </style>
 </head>
 <body>
-    <h1>Cart</h1>
-    {{#each products}}
-        <div>
-            <h2>{{this.product.title}}</h2>
-            <p>Quantity: {{this.quantity}}</p>
-            <button onclick="removeFromCart('{{this.product.id}}')">Remove from Cart</button>
-        </div>
-    {{/each}}
+    <h1>Your Cart</h1>
+    <div class="cart-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Stock</th>
+                    <th>Quantity</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="cartItems">
+                {{#each cart.products}}
+                <tr data-product-id="{{this.product._id}}">
+                    <td>{{this.product.title}}</td>
+                    <td>{{this.product.stock}}</td>
+                    <td>
+                        <input type="number" value="{{this.quantity}}" min="1" max="{{this.product.stock}}" oninput="updateQuantity(this)">
+                    </td>
+                    <td class="actions">
+                        <button onclick="removeFromCart('{{this.product._id}}')">Remove</button>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    <button class="finalize-button" onclick="finalizePurchase()">Finalize Purchase</button>
+
     <script>
+        const cartItems = [];
+
+        function updateQuantity(inputElement) {
+            const productId = inputElement.closest('tr').getAttribute('data-product-id');
+            const quantity = parseInt(inputElement.value);
+            const existingItem = cartItems.find(item => item.productId === productId);
+
+            if (existingItem) {
+                existingItem.quantity = quantity;
+            } else {
+                cartItems.push({ productId, quantity });
+            }
+        }
+
         function removeFromCart(productId) {
-            fetch(`/api/carts/remove/${productId}`, {
-                method: 'DELETE'
+            const row = document.querySelector(`tr[data-product-id="${productId}"]`);
+            if (row) {
+                row.remove();
+            }
+            const index = cartItems.findIndex(item => item.productId === productId);
+            if (index > -1) {
+                cartItems.splice(index, 1);
+            }
+        }
+
+        function finalizePurchase() {
+            fetch(`/api/carts/{{cart.id}}/purchase`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ items: cartItems })
             }).then(response => {
                 if (response.ok) {
-                    alert('Product removed from cart');
-                    location.reload();
+                    response.json().then(data => {
+                        alert(`Purchase completed. Total: $${data.totalAmount}. Products not purchased: ${data.productsUnavailable.join(', ')}`);
+                        location.href = '/ticket';
+                    });
                 } else {
-                    alert('Failed to remove product from cart');
+                    alert('Failed to complete purchase');
                 }
             });
         }

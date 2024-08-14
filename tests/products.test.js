@@ -88,7 +88,7 @@ describe('Products API', () => {
     const productId = '66ba56d9bfb9ce37fb95c06b'; // Reemplaza con un ID válido de tu BD
     
     const res = await requester.delete(`/api/products/${productId}`).set('Cookie', `jwt=${token}`);
-    console.log('Respuesta del servidor:', res.body); // Log para verificar la respuesta
+    //console.log('Respuesta del servidor:', res.body); // Log para verificar la respuesta
 
     if (res.status === 404) {
       expect(res.body).to.have.property('error').eql('Product not found');
