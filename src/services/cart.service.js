@@ -5,6 +5,7 @@ const CartDTO = require('../dto/cart.dto');
 import CartDAO from '../dao/mongo/cart.dao.js';
 import ProductDAO from '../dao/mongo/product.dao.js';
 import CartDTO from '../dto/cart.dto.js';
+import TicketService from '../services/ticket.service.js';
 
 class CartService {
   async createCart(userId) {
@@ -142,9 +143,16 @@ async getCartByUserId(userId) {
 
     return { totalAmount, errors };
   }*/
-  async purchaseCart(cartId, userId) {
+  async purchaseCart(cartId, userId, userEmail) {
+    console.log('Iniciando compra en CartService para el carrito:', cartId);
+    console.log('Usuario:', userId);
     const cart = await CartDAO.getCartById(cartId);
-    if (!cart) throw new Error('Cart not found');
+
+    if (!cart) {
+        console.error('Carrito no encontrado en CartService');
+        throw new Error('Cart not found');
+    }
+    console.log('Carrito obtenido para compra:', cart);
 
     const errors = [];
     let totalAmount = 0;
@@ -152,11 +160,13 @@ async getCartByUserId(userId) {
     for (const item of cart.products) {
         const product = await ProductDAO.getProductById(item.product);
         if (!product) {
+            console.error(`Producto con ID ${item.product} no encontrado`);
             errors.push(`Product ${item.product} not found`);
             continue;
         }
 
         if (product.stock < item.quantity) {
+            console.warn(`Stock insuficiente para el producto ${product.title}`);
             errors.push(`Not enough stock for product ${product.title}`);
             continue;
         }
@@ -170,9 +180,11 @@ async getCartByUserId(userId) {
         code: `TCK-${Date.now()}`,
         purchase_datetime: new Date(),
         amount: totalAmount,
-        purchaser: req.user.email,
+        purchaser: userEmail, // Usamos el email pasado como parámetro
         userId: userId
     };
+
+    console.log('Datos del ticket:', ticketData);
 
     const ticket = await TicketService.createTicket(ticketData);
 

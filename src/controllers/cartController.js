@@ -3,7 +3,7 @@ import TicketService from '../services/ticket.service.js';
 import ProductService from '../services/product.service.js';
 
 // Obtener carrito por ID de usuario
-export const getCartByUser = async (req, res) => {
+ const getCartByUser = async (req, res) => {
   try {
     const userId = req.user.id; // Asegúrate de usar el ID del usuario autenticado
     
@@ -70,18 +70,52 @@ const purchaseCart = async (req, res) => {
   }
 };
 */
+/*
 
-
-export const purchaseCart = async (req, res) => {
+const purchaseCart = async (req, res) => {
   try {
       const userId = req.user.id;
+      const userEmail = req.user.email; // Obtenemos el email del usuario
       const cartId = req.params.cid;
-
-      const { ticket, errors } = await CartService.purchaseCart(cartId, userId);
+      
+      console.log('Iniciando compra para el carrito:', cartId);
+      console.log('Usuario que realiza la compra:', userId);
+      const { ticket, errors } = await CartService.purchaseCart(cartId, userId, userEmail);
 
       // Redirigir a la vista del ticket
       if (ticket) {
+        console.log('Ticket generado:', ticket);
           return res.render('ticket', { ticket, errors });
+      } else {
+        console.error('No se pudo generar el ticket');
+          return res.status(400).json({ error: 'No se pudo generar el ticket.' });
+      }
+
+  } catch (error) {
+    console.error('Error en purchaseCart:', error.message);
+      res.status(500).json({ error: 'Failed to complete purchase', details: error.message });
+  }
+};*/
+const purchaseCart = async (req, res) => {
+  try {
+      const userId = req.user.id;
+      const userEmail = req.user.email; 
+      const cartId = req.params.cid;
+      
+      const { ticket, errors } = await CartService.purchaseCart(cartId, userId, userEmail);
+
+      // Convertir el ticket en un objeto plano
+      const plainTicket = {
+          code: ticket.code,
+          purchase_datetime: ticket.purchase_datetime,
+          amount: ticket.amount,
+          purchaser: ticket.purchaser,
+          id: ticket._id // Si necesitas incluir el ID también
+      };
+
+      // Redirigir a la vista del ticket
+      if (ticket) {
+          return res.render('ticket', { ticket: plainTicket, errors });
       } else {
           return res.status(400).json({ error: 'No se pudo generar el ticket.' });
       }
@@ -90,6 +124,7 @@ export const purchaseCart = async (req, res) => {
       res.status(500).json({ error: 'Failed to complete purchase', details: error.message });
   }
 };
+
 
 
 // Crear un nuevo carrito

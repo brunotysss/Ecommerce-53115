@@ -96,6 +96,13 @@
     <script>
         const cartItems = [];
 
+        // Inicializar cartItems con los valores actuales del carrito
+        document.querySelectorAll('#cartItems tr').forEach(row => {
+            const productId = row.getAttribute('data-product-id');
+            const quantity = parseInt(row.querySelector('input[type="number"]').value);
+            cartItems.push({ productId, quantity });
+        });
+
         function updateQuantity(inputElement) {
             const productId = inputElement.closest('tr').getAttribute('data-product-id');
             const quantity = parseInt(inputElement.value);
@@ -125,12 +132,11 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ items: cartItems })
+                body: JSON.stringify({ cartItems }) // Enviar las cantidades actualizadas al backend
             }).then(response => {
                 if (response.ok) {
                     response.json().then(data => {
-                        alert(`Purchase completed. Total: $${data.totalAmount}. Products not purchased: ${data.productsUnavailable.join(', ')}`);
-                        location.href = '/ticket';
+                        location.href = `/ticket/${data.ticket.id}`;
                     });
                 } else {
                     alert('Failed to complete purchase');
