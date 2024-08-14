@@ -11,14 +11,12 @@ const getAuthToken = async () => {
     email: 'Admin@example.com', // Asegúrate de que estas credenciales son correctas
     password: 'password'
   });
-  //console.log(loginRes.headers); // Verifica los encabezados
   const cookies = loginRes.headers['set-cookie'];
   if (!cookies) {
     throw new Error('No se encontraron cookies en la respuesta');
   }
 
   const token = cookies[0].split(';')[0].split('=')[1];
-  //console.log('Token:', token);
   return token;
 };
 
@@ -49,7 +47,6 @@ describe('Products API', () => {
     .set('Cookie', `jwt=${token}`) // Asegúrate de enviar el token
     .send(product);
 
-    //console.log('Respuesta del servidor:', res.body); // Agregar log para verificar la respuesta del servidor
 
     expect(res.status).to.equal(201);
     expect(res.body).to.have.property('_id');
@@ -88,7 +85,6 @@ describe('Products API', () => {
     const productId = '66ba56d9bfb9ce37fb95c06b'; // Reemplaza con un ID válido de tu BD
     
     const res = await requester.delete(`/api/products/${productId}`).set('Cookie', `jwt=${token}`);
-    //console.log('Respuesta del servidor:', res.body); // Log para verificar la respuesta
 
     if (res.status === 404) {
       expect(res.body).to.have.property('error').eql('Product not found');

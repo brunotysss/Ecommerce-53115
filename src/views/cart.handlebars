@@ -126,23 +126,29 @@
             }
         }
 
-        function finalizePurchase() {
-            fetch(`/api/carts/{{cart.id}}/purchase`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ cartItems }) // Enviar las cantidades actualizadas al backend
-            }).then(response => {
-                if (response.ok) {
-                    response.json().then(data => {
-                        location.href = `/ticket/${data.ticket.id}`;
-                    });
-                } else {
-                    alert('Failed to complete purchase');
-                }
-            });
+function finalizePurchase() {
+  fetch(`/api/carts/{{cart.id}}/purchase`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }).then(response => {
+    if (response.ok) {
+      response.json().then(data => {
+        // Verificar que se esté recibiendo el ticket y luego redirigir
+        if (data.ticket && data.ticket.id) {
+          location.href = `/ticket/${data.ticket.id}`; // Redirigir con el ID del ticket
+        } else {
+          alert('No se pudo generar el ticket.');
         }
+      });
+    } else {
+      alert('Failed to complete purchase');
+    }
+  }).catch(error => {
+    console.error('Error en la compra:', error);
+  });
+}
     </script>
 </body>
 </html>

@@ -7,7 +7,8 @@ import UserDTO from '../dto/user.dto.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import config from '../config/index.js';
-import { sendMail } from '../config/transport.js'; // Importa tu función de envío de correo
+import { sendResetPasswordEmail } from '../services/email.service.js';
+import {  sendMail} from '../config/transport.js'
 
 const { jwtSecret, refreshTokenSecret } = config;
 
@@ -40,40 +41,7 @@ class UserService {
     return new UserDTO(user);
   }
 
-  /*
-  async upgradeToPremium(userId) {
-    const user = await UserDAO.getUserById(userId);
-    if (!user) throw new Error('User not found');
 
-    const requiredDocuments = ['profile', 'product', 'document'];
-    const hasAllDocuments = requiredDocuments.every(doc => 
-      user.documents.some(userDoc => userDoc.name === doc)
-    );
-
-    if (!hasAllDocuments) throw new Error('User has not completed all required documents');
-
-    user.role = 'premium';
-    return await UserDAO.updateUser(user._id, { role: 'premium' });
-  }
-*/
-
-async resetPassword(token, newPassword) {
-  const user = await UserDAO.getUserByResetToken(token);
-
-  if (!user || user.resetPasswordExpires < Date.now()) {
-      throw new Error('Token is invalid or has expired');
-  }
-
-  const isSamePassword = await bcrypt.compare(newPassword, user.password);
-  if (isSamePassword) {
-      throw new Error('New password cannot be the same as the old password');
-  }
-
-  user.password = await bcrypt.hash(newPassword, 10);
-  user.resetPasswordToken = undefined;
-  user.resetPasswordExpires = undefined;
-  await UserDAO.updateUser(user);
-}
 
 
 
@@ -154,24 +122,57 @@ async upgradeToPremiumAsAdmin(userId) {
 
 
   async requestPasswordReset(email) {
-    const user = await this.getUserByEmail(email);
+    const user = await UserDAO.getUserByEmail(email); // Asumiendo que tienes esta función en DAO
     if (!user) throw new Error('User not found');
 
     const resetToken = crypto.randomBytes(32).toString('hex');
-    const resetLink = `http://localhost:8081/reset-password?token=${resetToken}`;
+    const resetLink = `http://localhost:8080/reset-password?token=${resetToken}`;
 
-    user.resetPasswordToken = resetToken;
-    user.resetPasswordExpires = Date.now() + 3600000; // 1 hora
+    const tokenExpiration = Date.now() + 3600000; // 1 hora desde el momento actual
 
-    await UserDAO.updateUser (user._id, { 
-      resetPasswordToken: user.resetPasswordToken, 
-      resetPasswordExpires: user.resetPasswordExpires 
+    // Actualiza el usuario en la base de datos usando el DAO
+    await UserDAO.updateUser(user._id, {
+      resetPasswordToken: resetToken,
+      resetPasswordExpires: tokenExpiration
     });
 
-    await sendMail(user.email, 'Password Reset Request', `Click the link to reset your password: ${resetLink}`);
+    // Envía el correo con el enlace de restablecimiento
+    await sendResetPasswordEmail(user.email, resetLink);
 
     return { message: 'Password reset link sent' };
   }
+
+
+
+
+  async resetPassword(token, newPassword) {
+    const user = await UserDAO.getUserByToken(token);
+    if (!user) throw new Error('Invalid or expired token');
+  
+    // Verifica si el link expiró
+    if (user.resetPasswordExpires < Date.now()) {
+      throw new Error('The reset link has expired');
+    }
+  
+    // Verifica si la nueva contraseña es la misma que la anterior
+    const isSamePassword = await bcrypt.compare(newPassword, user.password);
+    if (isSamePassword) {
+      throw new Error('Cannot use the same password as before');
+    }
+  
+    // Encripta la nueva contraseña
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+  
+    // Actualiza la contraseña del usuario y elimina el token de restablecimiento
+    await UserDAO.updateUser(user._id, {
+      password: hashedPassword,
+      resetPasswordToken: null,
+      resetPasswordExpires: null
+    });
+  
+    return { message: 'Password has been successfully reset' };
+  }
+  
 
   
 }

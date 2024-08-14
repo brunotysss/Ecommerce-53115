@@ -20,82 +20,7 @@ import ProductService from '../services/product.service.js';
   }
 };
 
-/*
-// Comprar carrito
-const purchaseCart = async (req, res) => {
-  try {
-    const cartId = req.params.cid;
-    const cart = await CartService.getCartById(cartId);
 
-    if (!cart) {
-      return res.status(404).json({ error: 'Cart not found' });
-    }
-
-    let totalAmount = 0;
-    const productsToPurchase = [];
-    const productsUnavailable = [];
-
-    for (const cartProduct of cart.products) {
-      const product = await ProductService.getProductById(cartProduct.product);
-      if (product.stock >= cartProduct.quantity) {
-        product.stock -= cartProduct.quantity;
-        await product.save();
-        totalAmount += product.price * cartProduct.quantity;
-        productsToPurchase.push(cartProduct);
-      } else {
-        productsUnavailable.push(cartProduct.product);
-      }
-    }
-
-    if (productsToPurchase.length > 0) {
-      const ticketData = {
-        code: `TCK-${Date.now()}`,
-        purchase_datetime: new Date(),
-        amount: totalAmount,
-        purchaser: req.user.email
-      };
-
-      await TicketService.createTicket(ticketData);
-    }
-
-    cart.products = productsUnavailable;
-    await cart.save();
-
-    res.json({
-      message: 'Purchase completed',
-      productsUnavailable
-    });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to complete purchase', details: error.message });
-  }
-};
-*/
-/*
-
-const purchaseCart = async (req, res) => {
-  try {
-      const userId = req.user.id;
-      const userEmail = req.user.email; // Obtenemos el email del usuario
-      const cartId = req.params.cid;
-      
-      console.log('Iniciando compra para el carrito:', cartId);
-      console.log('Usuario que realiza la compra:', userId);
-      const { ticket, errors } = await CartService.purchaseCart(cartId, userId, userEmail);
-
-      // Redirigir a la vista del ticket
-      if (ticket) {
-        console.log('Ticket generado:', ticket);
-          return res.render('ticket', { ticket, errors });
-      } else {
-        console.error('No se pudo generar el ticket');
-          return res.status(400).json({ error: 'No se pudo generar el ticket.' });
-      }
-
-  } catch (error) {
-    console.error('Error en purchaseCart:', error.message);
-      res.status(500).json({ error: 'Failed to complete purchase', details: error.message });
-  }
-};*/
 const purchaseCart = async (req, res) => {
   try {
       const userId = req.user.id;
@@ -115,13 +40,16 @@ const purchaseCart = async (req, res) => {
 
       // Redirigir a la vista del ticket
       if (ticket) {
-          return res.render('ticket', { ticket: plainTicket, errors });
+        return res.json({ ticket: plainTicket, errors });
       } else {
           return res.status(400).json({ error: 'No se pudo generar el ticket.' });
       }
-
-  } catch (error) {
-      res.status(500).json({ error: 'Failed to complete purchase', details: error.message });
+    } catch (error) {
+      if (error.message === 'No se puede completar la compra con un carrito vacío') {
+          return res.status(400).json({ error: error.message });
+      } else {
+          res.status(500).json({ error: 'Failed to complete purchase', details: error.message });
+      }
   }
 };
 

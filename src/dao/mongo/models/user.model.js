@@ -1,10 +1,6 @@
-/*const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-*/
 import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
-
 
 const userSchema = new Schema({
   first_name: { type: String, required: true },
@@ -21,11 +17,12 @@ const userSchema = new Schema({
       reference: { type: String },
     },
   ],
-  last_connection: { type: Date,   default: null},
-  isAdminUpgrade: { type: Boolean, default: false }  // Aquí se agrega el campo isAdminUpgrade
-
+  last_connection: { type: Date, default: null },
+  isAdminUpgrade: { type: Boolean, default: false },
+  
+  // Agregamos los campos para el restablecimiento de contraseña
+  resetPasswordToken: { type: String, default: null }, // Token de recuperación
+  resetPasswordExpires: { type: Date, default: null }   // Fecha de expiración del token
 });
 
 export default mongoose.model('User', userSchema);
-
-//module.exports = mongoose.model('User', userSchema);

@@ -27,22 +27,9 @@ import ProductService from '../services/product.service.js';
     }
   };
   
-/*
-  exports.createProduct = async (req, res) => {
-    try {
-      const newProduct = await ProductService.createProduct(req.body);
-      if (!newProduct) {
-        return res.status(400).json({ error: 'Failed to create product' });
-      }
-      res.status(201).json(newProduct);
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to create product', details: error.message });
-    }
-  };
-  */
+
   //exports.createProduct = async (req, res) => {
     export const createProduct = async (req, res) => {
-      //console.log('Usuario autenticado:', req.user); // Agregar log para ver el usuario autenticado
 
     try {
       const productData = {
@@ -80,30 +67,7 @@ import ProductService from '../services/product.service.js';
     }
 };
 
-//exports.deleteProduct = async (req, res) => {
-  /*
-  export const deleteProduct = async (req, res) => {
-  try {
-    const { pid } = req.params;
-    console.log('PID recibido:', pid);
 
-      const product = await ProductService.getProductById(pid);
-      
-      if (!product) {
-          return res.status(404).json({ error: 'Product not found' });
-      }
-
-      if (req.user.role === 'premium' && product.owner !== req.user.email) {
-          return res.status(403).json({ error: 'You can only delete your own products' });
-      }
-
-      await ProductService.deleteProduct(pid);
-      res.json({ message: 'Product deleted successfully' });
-  } catch (error) {
-      res.status(500).json({ error: 'Failed to delete product', details: error.message });
-  }
-};
-*/
 export const deleteProduct = async (req, res) => {
   try {
     const { pid } = req.params;

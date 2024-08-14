@@ -39,18 +39,7 @@ async getCartByUserId(userId) {
     const cart = await CartDAO.getCartById(id);
     return new CartDTO(cart);
   }
-/*
-  async addProductToCart(cartId, productId) {
-    console.log("Cart ID al intentar agregar producto:", cartId); 
-    const cart = await CartDAO.addProductToCart(cartId, productId);
-    console.log("Carrito después de agregar producto:", cart);
-    if (!cart) {
-      throw new Error('Carrito o producto no encontrado');
-  }
 
-
-    return new CartDTO(cart);
-  }*/
 
 
 
@@ -106,54 +95,19 @@ async getCartByUserId(userId) {
     const cart = await CartDAO.deleteAllProductsFromCart(cartId);
     return new CartDTO(cart);
   }
-/*
-  async purchaseCart(cartId, userId) {
-    const cart = await CartDAO.getCartById(cartId);
-    if (!cart) throw new Error('Cart not found');
 
-    const errors = [];
-    let totalAmount = 0;
-
-    for (const item of cart.products) {
-      const product = await ProductDAO.getProductById(item.product);
-      if (!product) {
-        errors.push(`Product ${item.product} not found`);
-        continue;
-      }
-
-      if (product.stock < item.quantity) {
-        errors.push(`Not enough stock for product ${product.title}`);
-        continue;
-      }
-
-      product.stock -= item.quantity;
-      await product.save();
-      totalAmount += product.price * item.quantity;
-    }
-
-    const ticket = await TicketDAO.createTicket({
-      code: uuidv4(),
-      purchase_datetime: new Date(),
-      amount: totalAmount,
-      purchaser: userId,
-    });
-
-    cart.products = cart.products.filter(item => errors.includes(`Not enough stock for product ${item.product}`));
-    await cart.save();
-
-    return { totalAmount, errors };
-  }*/
   async purchaseCart(cartId, userId, userEmail) {
-    console.log('Iniciando compra en CartService para el carrito:', cartId);
-    console.log('Usuario:', userId);
     const cart = await CartDAO.getCartById(cartId);
 
     if (!cart) {
         console.error('Carrito no encontrado en CartService');
         throw new Error('Cart not found');
     }
-    console.log('Carrito obtenido para compra:', cart);
-
+ // Verificar si el carrito está vacío
+ if (cart.products.length === 0) {
+  console.warn('El carrito está vacío');
+  throw new Error('No se puede completar la compra con un carrito vacío');
+}
     const errors = [];
     let totalAmount = 0;
 

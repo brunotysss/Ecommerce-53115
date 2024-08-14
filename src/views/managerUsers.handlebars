@@ -8,11 +8,12 @@
 {{/if}}
 
 <!-- Botón para eliminar usuarios sin actividad -->
-<form action="/api/users/delete-inactive" method="POST" style="margin-bottom: 20px;">
-  <button type="submit" style="background-color:red;color:white;padding:10px 20px;border:none;border-radius:5px;">
+<form id="deleteInactiveUsersForm" style="margin-bottom: 20px;">
+  <button type="button" id="deleteInactiveUsersButton" style="background-color:red;color:white;padding:10px 20px;border:none;border-radius:5px;">
     Borrar Usuarios sin Actividad
   </button>
 </form>
+
 
 <table>
   <thead>
@@ -56,3 +57,27 @@
     {{/each}}
   </tbody>
 </table>
+<script>
+  document.getElementById('deleteInactiveUsersButton').addEventListener('click', function() {
+    if (confirm('¿Estás seguro de que quieres borrar los usuarios inactivos?')) {
+      fetch('/api/users', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.message) {
+          alert(data.message);
+          // Redirigir después de eliminar
+          window.location.href = '/admin/manage-users';
+        } else {
+          alert('Error al eliminar usuarios inactivos');
+        }
+      })
+      .catch(error => console.error('Error:', error));
+    }
+  });
+</script>

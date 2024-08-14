@@ -66,13 +66,17 @@ async getUserByResetToken(token) {
   return User.findOne({ resetPasswordToken: token });
 }
 
-async updateUser(user) {
-  return user.save();
+async updateUser(userId, updates) {
+  // Actualizar usuario directamente
+  return await User.findByIdAndUpdate(userId, updates, { new: true });
 }
-
   // Renombra este método a `updateUserFields`
   async updateUserFields(userId, updateData) {
     return await User.findByIdAndUpdate(userId, updateData, { new: true });
+  }
+
+  async getUserByToken(token) {
+    return await User.findOne({ resetPasswordToken: token });
   }
 
 
