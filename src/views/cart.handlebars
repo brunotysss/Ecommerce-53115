@@ -3,26 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <title>Cart</title>
+    <style>
+        /* ... (tu CSS) ... */
+    </style>
 </head>
 <body>
-    <h1>Cart</h1>
-    {{#each products}}
-        <div>
-            <h2>{{this.product.title}}</h2>
-            <p>Quantity: {{this.quantity}}</p>
-            <button onclick="removeFromCart('{{this.product.id}}')">Remove from Cart</button>
-        </div>
-    {{/each}}
+    <h1>Your Cart</h1>
+    <div class="cart-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Actions</th>
+                    <th>Warning</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each cart.products}}
+                <tr>
+                    <td>{{this.product.title}}</td>
+                    <td>{{this.product.price}}</td>
+                    <td>
+                        <input type="number" value="{{this.quantity}}" min="1" onchange="updateQuantity('{{this.product._id}}', this.value)">
+                    </td>
+                    <td>
+                        <button onclick="removeFromCart('{{this.product._id}}')">Remove</button>
+                    </td>
+                    <td>
+                        {{#if isUserOwner}} <!-- Verifica si el dueño es el usuario -->
+                            <p style="color:red;">Producto removido por ser del mismo usuario</p>
+                        {{/if}}
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    <button onclick="purchaseCart()">Finalize Purchase</button> <!-- Botón para finalizar la compra -->
+    
     <script>
+        function updateQuantity(productId, quantity) {
+            fetch(`/api/carts/update/${productId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ quantity: quantity })
+            }).then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert('Failed to update quantity');
+                }
+            });
+        }
+
         function removeFromCart(productId) {
             fetch(`/api/carts/remove/${productId}`, {
                 method: 'DELETE'
             }).then(response => {
                 if (response.ok) {
-                    alert('Product removed from cart');
                     location.reload();
                 } else {
                     alert('Failed to remove product from cart');
+                }
+            });
+        }
+
+        function purchaseCart() {
+            fetch(`/api/carts/purchase`, {
+                method: 'POST'
+            }).then(response => {
+                if (response.ok) {
+                    alert('Purchase completed');
+                    location.href = '/products'; // Redirige a productos después de la compra
+                } else {
+                    alert('Failed to complete purchase');
                 }
             });
         }

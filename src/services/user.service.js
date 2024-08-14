@@ -1,6 +1,7 @@
 /*const UserDAO = require('../dao/mongo/user.dao');
 const UserDTO = require('../dto/user.dto');
 */
+import crypto from 'crypto';
 import UserDAO from '../dao/mongo/user.dao.js';
 import UserDTO from '../dto/user.dto.js';
 import jwt from 'jsonwebtoken';
@@ -55,6 +56,29 @@ class UserService {
     return await UserDAO.updateUser(user._id, { role: 'premium' });
   }
 */
+
+async resetPassword(token, newPassword) {
+  const user = await UserDAO.getUserByResetToken(token);
+
+  if (!user || user.resetPasswordExpires < Date.now()) {
+      throw new Error('Token is invalid or has expired');
+  }
+
+  const isSamePassword = await bcrypt.compare(newPassword, user.password);
+  if (isSamePassword) {
+      throw new Error('New password cannot be the same as the old password');
+  }
+
+  user.password = await bcrypt.hash(newPassword, 10);
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpires = undefined;
+  await UserDAO.updateUser(user);
+}
+
+
+
+
+
 
 async upgradeToPremium(userId) {
   const user = await UserDAO.getUserById(userId);
@@ -129,7 +153,27 @@ async upgradeToPremiumAsAdmin(userId) {
   }
 
 
+  async requestPasswordReset(email) {
+    const user = await this.getUserByEmail(email);
+    if (!user) throw new Error('User not found');
 
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetLink = `http://localhost:8081/reset-password?token=${resetToken}`;
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hora
+
+    await UserDAO.updateUser (user._id, { 
+      resetPasswordToken: user.resetPasswordToken, 
+      resetPasswordExpires: user.resetPasswordExpires 
+    });
+
+    await sendMail(user.email, 'Password Reset Request', `Click the link to reset your password: ${resetLink}`);
+
+    return { message: 'Password reset link sent' };
+  }
+
+  
 }
 
 

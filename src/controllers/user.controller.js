@@ -32,9 +32,9 @@ const register = async (req, res) => {
 const manageUsers = async(req, res) => {
     try {
       const users = await UserService.getAllUsers(); // Obten todos los usuarios desde el servicio
-  /*    users.forEach(user => {
-        console.log(user._id); // Verifica que cada usuario tiene un _id
-    });*/
+     users.forEach(user => {
+        console.log(user); // Verifica que cada usuario tiene un _id
+    });
       res.render('managerUsers', { users });
     } catch (error) {
       res.status(500).json({ error: 'Failed to fetch users', details: error.message });
@@ -148,7 +148,7 @@ const upgradeToPremium = async (req, res) => {
     }
 };
 */
-
+/*
 const upgradeToPremium = async (req, res) => {
     try {
         const userId = req.params.uid;
@@ -159,9 +159,9 @@ const upgradeToPremium = async (req, res) => {
             if (!user) {
                 return res.status(404).json({ error: 'User not found' });
             }
-          //  return res.redirect('/admin/manage-users');
+           return res.redirect('/admin/manage-users');
 
-           return res.json({ message: 'User upgraded to premium by admin', user });
+       /////    return res.json({ message: 'User upgraded to premium by admin', user });
         }
 
         // Si no es admin, seguimos la lógica estándar
@@ -174,12 +174,34 @@ const upgradeToPremium = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'Failed to upgrade user', details: error.message });
     }
+};*/
+
+
+
+const upgradeToPremium = async (req, res) => {
+  console.log('Request Params:', req.params); // Agregar esto para depurar
+
+  try {
+      const userId = req.params.uid;
+      let user;
+
+      if (req.user.role === 'admin') {
+          user = await UserService.upgradeToPremiumAsAdmin(userId);
+      } else {
+          user = await UserService.upgradeToPremium(userId);
+      }
+
+      if (!user) {
+          return res.status(404).json({ error: 'User not found or missing documents' });
+      }
+
+      res.redirect('/admin/manage-users'); // Redirigir a la vista de gestión de usuarios
+  } catch (error) {
+      res.status(500).json({ error: 'Failed to upgrade user', details: error.message });
+  }
 };
 
-
-
-
-
+/*
 const forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
@@ -199,9 +221,22 @@ const forgotPassword = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'Failed to request password reset', details: error.message });
     }
+};*/
+const forgotPassword = async (req, res) => {
+  try {
+      const { email } = req.body;
+      await UserService.requestPasswordReset(email);
+      res.json({ message: 'Password reset link sent' });
+  } catch (error) {
+      res.status(500).json({ error: 'Failed to request password reset', details: error.message });
+  }
 };
 
+/*
+
 const resetPassword = async (req, res) => {
+
+
     try {
         const { token, newPassword } = req.body;
         const user = await UserService.getUserByResetToken(token);
@@ -225,6 +260,20 @@ const resetPassword = async (req, res) => {
         res.status(500).json({ error: 'Failed to reset password', details: error.message });
     }
 };
+*/
+
+const resetPassword = async (req, res) => {
+  try {
+      const { token, newPassword } = req.body;
+      await UserService.resetPassword(token, newPassword);
+      res.json({ message: 'Password has been reset' });
+  } catch (error) {
+      res.status(500).json({ error: error.message });
+  }
+};
+
+
+
 
 const getCurrentUser = (req, res) => {
     res.json(req.user);
@@ -242,6 +291,7 @@ const getCurrentUser = (req, res) => {
 
 
 // Exportamos todas las funciones en un objeto
+
 export default {
     deleteInactiveUsers,
     manageUsers,

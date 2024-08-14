@@ -13,7 +13,6 @@ import { fileURLToPath } from 'url';
 
 
 
-
 faker.locale = 'es'; 
 const router = Router();
 
