@@ -22,6 +22,13 @@ const cookieExtractor = req => {
   }
   return token;
 };
+const jwtSecret = process.env.JWT_SECRET;
+
+if (!jwtSecret) {
+    throw new Error("JWT secret is not defined");
+}
+
+
 
 passport.use(
   'login',

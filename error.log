@@ -8,3 +8,4 @@
 {"level":"error","message":"500 - Missing helper: \"multiply\" - /my-cart - GET - ::1","service":"user-service","timestamp":"2024-08-14 14:09:06"}
 {"level":"error","message":"500 - Missing helper: \"multiply\" - /my-cart - GET - ::1","service":"user-service","timestamp":"2024-08-14 14:13:58"}
 {"level":"error","message":"500 - Missing helper: \"multiply\" - /my-cart - GET - ::1","service":"user-service","timestamp":"2024-08-14 14:15:29"}
+{"level":"error","message":"500 - Login sessions require session support. Did you forget to use `express-session` middleware? - /api/users/login - POST - ::1","service":"user-service","timestamp":"2024-08-14 23:08:16"}

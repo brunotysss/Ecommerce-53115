@@ -48,12 +48,20 @@ const login = async (req, res) => {
       res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
   // Envía el token JWT en una cookie HTTP
   // Establecer la cookie JWT
-  res.cookie('jwt', token, {
-    httpOnly: true, // No accesible desde JavaScript
-    secure: process.env.NODE_ENV === 'production', // Solo en HTTPS en producción
-    sameSite: 'lax', // Asegura que la cookie se envíe correctamente
-    path: '/', // Asegura que la cookie esté disponible para todas las rutas
-  });
+     // Establecer las cookies
+     res.cookie('jwt', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // Solo en HTTPS en producción
+        sameSite: 'lax',
+        path: '/', // Asegura que la cookie esté disponible para todas las rutas
+      });
+
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // Solo en HTTPS en producción
+        sameSite: 'lax',
+        path: '/', // Asegura que la cookie esté disponible para todas las rutas
+      });
     // Redirige según el rol del usuario
     if (user.role === 'admin') {
         return res.redirect('/admin/manage-users');
@@ -82,6 +90,20 @@ const refreshToken = async (req, res) => {
         user.refreshTokens = user.refreshTokens.filter(token => token !== refreshToken);
         user.refreshTokens.push(newRefreshToken);
         await user.save();
+            // Establecer las cookies
+      res.cookie('jwt', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // Solo en HTTPS en producción
+        sameSite: 'lax',
+        path: '/', // Asegura que la cookie esté disponible para todas las rutas
+      });
+
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // Solo en HTTPS en producción
+        sameSite: 'lax',
+        path: '/', // Asegura que la cookie esté disponible para todas las rutas
+      });
 
         res.cookie('jwt', newToken, { httpOnly: true, secure: true });
         res.cookie('refreshToken', newRefreshToken, { httpOnly: true, secure: true });

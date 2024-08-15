@@ -362,3 +362,18 @@
 {"level":"info","message":"Server running on port 8080","service":"user-service","timestamp":"2024-08-14 22:47:50"}
 {"level":"info","message":"MongoDB connected...","service":"user-service","timestamp":"2024-08-14 22:48:02"}
 {"level":"info","message":"Server running on port 8080","service":"user-service","timestamp":"2024-08-14 22:48:02"}
+{"level":"info","message":"MongoDB connected...","service":"user-service","timestamp":"2024-08-14 22:53:57"}
+{"level":"info","message":"Server running on port 8080","service":"user-service","timestamp":"2024-08-14 22:53:57"}
+{"level":"info","message":"MongoDB connected...","service":"user-service","timestamp":"2024-08-14 22:57:46"}
+{"level":"info","message":"Server running on port 8080","service":"user-service","timestamp":"2024-08-14 22:57:46"}
+{"level":"info","message":"MongoDB connected...","service":"user-service","timestamp":"2024-08-14 23:04:18"}
+{"level":"info","message":"Server running on port 8080","service":"user-service","timestamp":"2024-08-14 23:04:18"}
+{"level":"info","message":"MongoDB connected...","service":"user-service","timestamp":"2024-08-14 23:08:07"}
+{"level":"info","message":"Server running on port 8080","service":"user-service","timestamp":"2024-08-14 23:08:07"}
+{"level":"error","message":"500 - Login sessions require session support. Did you forget to use `express-session` middleware? - /api/users/login - POST - ::1","service":"user-service","timestamp":"2024-08-14 23:08:16"}
+{"level":"info","message":"MongoDB connected...","service":"user-service","timestamp":"2024-08-14 23:08:25"}
+{"level":"info","message":"Server running on port 8080","service":"user-service","timestamp":"2024-08-14 23:08:25"}
+{"level":"info","message":"MongoDB connected...","service":"user-service","timestamp":"2024-08-14 23:13:13"}
+{"level":"info","message":"Server running on port 8080","service":"user-service","timestamp":"2024-08-14 23:13:13"}
+{"level":"info","message":"MongoDB connected...","service":"user-service","timestamp":"2024-08-14 23:13:38"}
+{"level":"info","message":"Server running on port 8080","service":"user-service","timestamp":"2024-08-14 23:13:38"}

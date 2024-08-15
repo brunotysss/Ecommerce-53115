@@ -96,7 +96,7 @@ app.set('views', join(__dirname, 'views'));
 app.use(compression({
   brotli: { enabled: true, zlib: {} }
 }));
-console.log("JWT_SECRET:", process.env.JWT_SECRET);
+
 
 app.use(express.static(join(__dirname, 'public')));
 app.use(session({
@@ -111,7 +111,7 @@ app.use(session({
 
 initializePassport();
 app.use(passport.initialize());
-app.use(passport.session());
+//app.use(passport.session());
 
 app.use('/api/products', productRoutes);
 app.use('/api/carts', cartRoutes);
