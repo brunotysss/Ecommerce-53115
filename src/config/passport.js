@@ -15,6 +15,8 @@ const cookieExtractor = req => {
   let token = null;
   if (req && req.cookies) {
     token = req.cookies['jwt'];
+    console.log("JWT Token from cookie:", token);  // Imprime el token para ver si está presente
+
   }
   return token;
 };
@@ -61,25 +63,7 @@ passport.use(
     }
   )
 );
-/*
-//module.exports = {
-  export default {
-  initializePassport: () => {
-    passport.serializeUser((user, done) => {
-      done(null, user.id);
-    });
 
-    passport.deserializeUser(async (id, done) => {
-      try {
-        const user = await UserService.getUserById(id);
-        done(null, user);
-      } catch (error) {
-        done(error, null);
-      }
-    });
-  }
-};
-*/
 
 const initializePassport = () => {
   passport.serializeUser((user, done) => {

@@ -57,11 +57,17 @@
     {{/each}}
   </tbody>
 </table>
+<form action="/api/users/logout" method="POST">
+  <button type="submit" style="background-color:gray;color:white;padding:10px 20px;border:none;border-radius:5px;">
+    Logout
+  </button>
+</form>
 <script>
   document.getElementById('deleteInactiveUsersButton').addEventListener('click', function() {
     if (confirm('¿Estás seguro de que quieres borrar los usuarios inactivos?')) {
       fetch('/api/users', {
         method: 'DELETE',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'

@@ -48,6 +48,12 @@ const hbs = exphbs.create({
       return a * b;
     }}
 });
+app.use((req, res, next) => {
+  console.log("Cookies:", req.cookies);  // Verifica si las cookies llegan
+  next();
+});
+
+
 
 app.engine('handlebars', hbs.engine); // Usar la instancia personalizada de Handlebars
 app.set('view engine', 'handlebars');
@@ -90,6 +96,7 @@ app.set('views', join(__dirname, 'views'));
 app.use(compression({
   brotli: { enabled: true, zlib: {} }
 }));
+console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
 app.use(express.static(join(__dirname, 'public')));
 app.use(session({

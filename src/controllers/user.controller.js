@@ -46,7 +46,14 @@ const login = async (req, res) => {
   
       res.cookie('jwt', token, { httpOnly: true, secure: true });
       res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
-
+  // Envía el token JWT en una cookie HTTP
+  // Establecer la cookie JWT
+  res.cookie('jwt', token, {
+    httpOnly: true, // No accesible desde JavaScript
+    secure: process.env.NODE_ENV === 'production', // Solo en HTTPS en producción
+    sameSite: 'lax', // Asegura que la cookie se envíe correctamente
+    path: '/', // Asegura que la cookie esté disponible para todas las rutas
+  });
     // Redirige según el rol del usuario
     if (user.role === 'admin') {
         return res.redirect('/admin/manage-users');
@@ -96,8 +103,8 @@ const logout = async (req, res) => {
 
         res.clearCookie('jwt');
         res.clearCookie('refreshToken');
-        res.json({ message: 'Logout successful' });
-    } catch (error) {
+        res.redirect('/login');  
+      } catch (error) {
         res.status(500).json({ error: 'Failed to logout', details: error.message });
     }
 };

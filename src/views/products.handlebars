@@ -90,6 +90,11 @@
     <div class="header-container">
         <div class="welcome">¡Bienvenidos!</div>
         <a href="/my-cart" class="view-cart">View Cart</a>
+        <form action="/api/users/logout" method="POST">
+  <button type="submit" style="background-color:gray;color:white;padding:10px 20px;border:none;border-radius:5px;">
+    Logout
+  </button>
+</form>
     </div>
     <div class="products-container">
         {{#each products}}
@@ -107,6 +112,7 @@
         function addToCart(productId) {
             fetch(`/api/carts/add/${productId}`, {
                 method: 'POST',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json'
                 },

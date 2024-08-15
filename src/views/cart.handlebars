@@ -129,6 +129,7 @@
 function finalizePurchase() {
   fetch(`/api/carts/{{cart.id}}/purchase`, {
     method: 'POST',
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json'
     }

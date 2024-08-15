@@ -35,16 +35,18 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Product'
+        '404':
+          description: No products found
         '500':
           description: Internal server error
 
-  /api/products/{id}:
+  /api/products/{pid}:
     get:
       summary: Get product by ID
       tags: 
         - Products
       parameters:
-        - name: id
+        - name: pid
           in: path
           required: true
           schema:
@@ -67,7 +69,7 @@ paths:
       tags: 
         - Products
       parameters:
-        - name: id
+        - name: pid
           in: path
           required: true
           schema:
@@ -84,8 +86,8 @@ paths:
           description: Product updated successfully
         '404':
           description: Product not found
-        '400':
-          description: Invalid input
+        '403':
+          description: Unauthorized to update this product
         '500':
           description: Internal server error
 
@@ -94,7 +96,7 @@ paths:
       tags: 
         - Products
       parameters:
-        - name: id
+        - name: pid
           in: path
           required: true
           schema:
@@ -105,6 +107,8 @@ paths:
           description: Product deleted successfully
         '404':
           description: Product not found
+        '403':
+          description: Unauthorized to delete this product
         '500':
           description: Internal server error
 
@@ -152,14 +156,8 @@ paths:
       tags: 
         - Carts
       parameters:
-        - name: cid
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The ID of the cart
         - name: pid
-          in: query
+          in: path
           required: true
           schema:
             type: string
@@ -172,34 +170,9 @@ paths:
         '500':
           description: Internal server error
 
-    delete:
-      summary: Remove product from cart
-      tags: 
-        - Carts
-      parameters:
-        - name: cid
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The ID of the cart
-        - name: pid
-          in: query
-          required: true
-          schema:
-            type: string
-          description: The ID of the product to remove from the cart
-      responses:
-        '200':
-          description: Product removed from cart successfully
-        '404':
-          description: Cart or Product not found
-        '500':
-          description: Internal server error
-
   /api/users:
     get:
-      summary: Get all users
+      summary: Get all users (Admin only)
       tags: 
         - Users
       responses:
@@ -232,9 +205,9 @@ paths:
         '500':
           description: Internal server error
 
-  /api/users/{uid}:
-    get:
-      summary: Get user by ID
+  /api/users/{uid}/documents:
+    post:
+      summary: Upload documents for a user
       tags: 
         - Users
       parameters:
@@ -243,64 +216,116 @@ paths:
           required: true
           schema:
             type: string
-          description: The ID of the user to retrieve
+          description: The ID of the user
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                profile:
+                  type: string
+                  format: binary
+                product:
+                  type: string
+                  format: binary
+                document:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Documents uploaded successfully
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+
+  /api/users/{uid}/premium:
+    post:
+      summary: Upgrade user to premium
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the user to upgrade
+      responses:
+        '200':
+          description: User upgraded to premium successfully
+        '404':
+          description: User not found or missing documents
+        '500':
+          description: Internal server error
+
+  /api/ticket/{tid}:
+    get:
+      summary: Get ticket by ID
+      tags:
+        - Tickets
+      parameters:
+        - name: tid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the ticket to retrieve
       responses:
         '200':
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/Ticket'
         '404':
-          description: User not found
+          description: Ticket not found
         '500':
           description: Internal server error
 
-    put:
-      summary: Update user by ID
-      tags: 
-        - Users
-      parameters:
-        - name: uid
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The ID of the user to update
+  /api/sessions/current:
+    get:
+      summary: Get current session
+      tags:
+        - Sessions
+      responses:
+        '200':
+          description: Current session details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '500':
+          description: Internal server error
+
+  /api/email/send:
+    post:
+      summary: Send an email
+      tags:
+        - Email
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              type: object
+              properties:
+                to:
+                  type: string
+                  description: Recipient email address
+                subject:
+                  type: string
+                  description: Email subject
+                text:
+                  type: string
+                  description: Email content
       responses:
         '200':
-          description: User updated successfully
-        '404':
-          description: User not found
-        '400':
-          description: Invalid input
+          description: Email sent successfully
         '500':
-          description: Internal server error
-
-    delete:
-      summary: Delete user by ID
-      tags: 
-        - Users
-      parameters:
-        - name: uid
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The ID of the user to delete
-      responses:
-        '200':
-          description: User deleted successfully
-        '404':
-          description: User not found
-        '500':
-          description: Internal server error
+          description: Failed to send email
 
 components:
   schemas:
@@ -366,3 +391,23 @@ components:
         last_name: "Doe"
         email: "john.doe@example.com"
         role: "user"
+
+    Ticket:
+      type: object
+      properties:
+        id:
+          type: string
+        code:
+          type: string
+        purchase_datetime:
+          type: string
+        amount:
+          type: number
+        purchaser:
+          type: string
+      example:
+        id: "60b8d29581c9b341b16d6e14"
+        code: "TICKET-001"
+        purchase_datetime: "2024-08-14T12:00:00Z"
+        amount: 250.0
+        purchaser: "john.doe@example.com"

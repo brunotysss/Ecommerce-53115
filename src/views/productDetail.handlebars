@@ -14,7 +14,8 @@
     <script>
         function addToCart(productId) {
             fetch(`/api/carts/add/${productId}`, {
-                method: 'POST'
+                method: 'POST',
+                credentials: 'include',
             }).then(response => {
                 if (response.ok) {
                     alert('Product added to cart');

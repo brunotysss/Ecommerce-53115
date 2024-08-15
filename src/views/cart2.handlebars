@@ -16,7 +16,8 @@
     <script>
         function removeFromCart(productId) {
             fetch(`/api/carts/remove/${productId}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                credentials: 'include'
             }).then(response => {
                 if (response.ok) {
                     alert('Product removed from cart');

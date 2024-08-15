@@ -1,9 +1,4 @@
-/*const { Router } = require('express');
-const { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct } = require('../controllers/productController');
-const ProductModel = require('../dao/mongo/models/product.model');
-const { authenticate, authorize } = require('../middleware/auth');
-const faker = require('faker');
-*/
+
 import { Router } from 'express';
 import { getAllProducts, getProductById, createProduct, updateProduct, deleteProduct } from '../controllers/productController.js';
 import ProductModel from '../dao/mongo/models/product.model.js';
@@ -14,19 +9,11 @@ const router = Router();
 
 router.get('/', getAllProducts);
 router.get('/:pid', getProductById);
-/*router.post('/', createProduct);
-router.put('/:pid', updateProduct);
-router.delete('/:pid', deleteProduct);
-*/
+
 router.post('/', authenticate, authorize(['Admin', 'premium']), createProduct);
 router.put('/:pid', authenticate, authorize(['Admin', 'premium']), updateProduct);
 router.delete('/:pid', authenticate, authorize(['Admin', 'premium']), deleteProduct);
-/*
-router.post('/', authenticate, authorize(['admin', 'premium']), ProductController.createProduct);
-router.put('/:id', authenticate, authorize(['admin', 'premium']), ProductController.updateProduct);
-router.delete('/:id', authenticate, authorize(['admin', 'premium']), ProductController.deleteProduct);
-*/
-// Endpoint para inicializar datos
+
 router.post('/init', async (req, res) => {
     try {
       await ProductModel.deleteMany({});
