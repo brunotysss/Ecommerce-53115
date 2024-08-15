@@ -14,6 +14,8 @@ import bcrypt from 'bcrypt';
 const cookieExtractor = req => {
   let token = null;
   if (req && req.cookies) {
+    console.log("Cookies recibidas:", req.cookies);  // Verifica si las cookies llegan
+
     token = req.cookies['jwt'];
     console.log("JWT Token from cookie:", token);  // Imprime el token para ver si está presente
 
