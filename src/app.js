@@ -34,7 +34,7 @@ import exphbs from 'express-handlebars';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const app = express();
-
+app.use(cookieParser());
 const hbs = exphbs.create({
   defaultLayout: 'main',
   runtimeOptions: {
@@ -59,7 +59,7 @@ app.engine('handlebars', hbs.engine); // Usar la instancia personalizada de Hand
 app.set('view engine', 'handlebars');
 app.set('views', join(__dirname, 'views'));
 app.use(express.json());
-app.use(cookieParser());
+
 app.use(express.urlencoded({ extended: true }));
 
 

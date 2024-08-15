@@ -356,3 +356,9 @@
 {"level":"info","message":"Server running on port 8080","service":"user-service","timestamp":"2024-08-14 22:10:56"}
 {"level":"info","message":"MongoDB connected...","service":"user-service","timestamp":"2024-08-14 22:32:24"}
 {"level":"info","message":"Server running on port 8080","service":"user-service","timestamp":"2024-08-14 22:32:24"}
+{"level":"info","message":"MongoDB connected...","service":"user-service","timestamp":"2024-08-14 22:47:17"}
+{"level":"info","message":"Server running on port 8080","service":"user-service","timestamp":"2024-08-14 22:47:17"}
+{"level":"info","message":"MongoDB connected...","service":"user-service","timestamp":"2024-08-14 22:47:50"}
+{"level":"info","message":"Server running on port 8080","service":"user-service","timestamp":"2024-08-14 22:47:50"}
+{"level":"info","message":"MongoDB connected...","service":"user-service","timestamp":"2024-08-14 22:48:02"}
+{"level":"info","message":"Server running on port 8080","service":"user-service","timestamp":"2024-08-14 22:48:02"}
