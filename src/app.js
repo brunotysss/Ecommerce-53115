@@ -34,6 +34,10 @@ import exphbs from 'express-handlebars';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const app = express();
+// Redirigir desde la raíz (/) a /login
+router.get('/', (req, res) => {
+  res.redirect('/login');  // Redirige a la página de login
+});
 app.use(cookieParser());
 const hbs = exphbs.create({
   defaultLayout: 'main',
