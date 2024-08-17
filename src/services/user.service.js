@@ -94,6 +94,9 @@ async upgradeToPremiumAsAdmin(userId) {
 
     // Almacenar el refresh token
     user.refreshTokens.push(refreshToken);
+    if (user.refreshTokens.length > 3) {
+      user.refreshTokens = user.refreshTokens.slice(-3); // Mantén solo los últimos 3 tokens
+  }
     await user.save();
 
     return { token, refreshToken , user  };

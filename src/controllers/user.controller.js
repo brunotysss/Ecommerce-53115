@@ -69,7 +69,7 @@ const login = async (req, res) => {
       return res.redirect('/products');
     //  res.redirect('/products');
     } catch (error) {
-      res.status(401).json({ error: error.message });
+      return res.status(401).render('login', { error: 'Credenciales incorrectas. Intente nuevamente.' });
     }
   };
 
@@ -89,6 +89,9 @@ const refreshToken = async (req, res) => {
 
         user.refreshTokens = user.refreshTokens.filter(token => token !== refreshToken);
         user.refreshTokens.push(newRefreshToken);
+        if (user.refreshTokens.length > 3) {
+          user.refreshTokens = user.refreshTokens.slice(-3); // Mantener solo los 3 tokens más recientes
+      }
         await user.save();
             // Establecer las cookies
       res.cookie('jwt', token, {
@@ -160,47 +163,7 @@ const uploadDocuments = async (req, res) => {
         res.status(500).json({ error: 'Failed to upload documents', details: error.message });
     }
 };
-/*
-const upgradeToPremium = async (req, res) => {
-    try {
-        const userId = req.params.uid;
-        const user = await UserService.upgradeToPremium(userId);
-        if (!user) {
-            return res.status(404).json({ error: 'User not found or missing documents' });
-        }
-        res.json({ message: 'User upgraded to premium', user });
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to upgrade user', details: error.message });
-    }
-};
-*/
-/*
-const upgradeToPremium = async (req, res) => {
-    try {
-        const userId = req.params.uid;
 
-        // Si el usuario es admin, no necesitamos verificar los documentos
-        if (req.user.role === 'admin') {
-            const user = await UserService.upgradeToPremiumAsAdmin(userId);
-            if (!user) {
-                return res.status(404).json({ error: 'User not found' });
-            }
-           return res.redirect('/admin/manage-users');
-
-       /////    return res.json({ message: 'User upgraded to premium by admin', user });
-        }
-
-        // Si no es admin, seguimos la lógica estándar
-        const user = await UserService.upgradeToPremium(userId);
-        if (!user) {
-            return res.status(404).json({ error: 'User not found or missing documents' });
-        }
-
-        res.json({ message: 'User upgraded to premium', user });
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to upgrade user', details: error.message });
-    }
-};*/
 
 
 

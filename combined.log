@@ -377,3 +377,13 @@
 {"level":"info","message":"Server running on port 8080","service":"user-service","timestamp":"2024-08-14 23:13:13"}
 {"level":"info","message":"MongoDB connected...","service":"user-service","timestamp":"2024-08-14 23:13:38"}
 {"level":"info","message":"Server running on port 8080","service":"user-service","timestamp":"2024-08-14 23:13:38"}
+{"level":"info","message":"MongoDB connected...","service":"user-service","timestamp":"2024-08-15 16:58:13"}
+{"level":"info","message":"Server running on port 8080","service":"user-service","timestamp":"2024-08-15 16:58:13"}
+{"level":"info","message":"MongoDB connected...","service":"user-service","timestamp":"2024-08-17 16:49:49"}
+{"level":"info","message":"Server running on port 8080","service":"user-service","timestamp":"2024-08-17 16:49:49"}
+{"level":"info","message":"MongoDB connected...","service":"user-service","timestamp":"2024-08-17 17:00:49"}
+{"level":"info","message":"Server running on port 8080","service":"user-service","timestamp":"2024-08-17 17:00:49"}
+{"level":"info","message":"MongoDB connected...","service":"user-service","timestamp":"2024-08-17 17:03:16"}
+{"level":"info","message":"Server running on port 8080","service":"user-service","timestamp":"2024-08-17 17:03:16"}
+{"level":"info","message":"MongoDB connected...","service":"user-service","timestamp":"2024-08-17 17:04:42"}
+{"level":"info","message":"Server running on port 8080","service":"user-service","timestamp":"2024-08-17 17:04:42"}
