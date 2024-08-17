@@ -129,7 +129,9 @@ async upgradeToPremiumAsAdmin(userId) {
     if (!user) throw new Error('User not found');
 
     const resetToken = crypto.randomBytes(32).toString('hex');
-    const resetLink = `http://localhost:8080/reset-password?token=${resetToken}`;
+    const baseUrl = process.env.BASE_URL || 'http://localhost:8080';
+
+    const resetLink = `${baseUrl}/reset-password?token=${resetToken}`;
 
     const tokenExpiration = Date.now() + 3600000; // 1 hora desde el momento actual
 
